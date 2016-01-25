@@ -43,7 +43,7 @@ class InventoriesController extends AppController {
 						$data['Vary'][$key3] = $fields;
 						$data['Vary']['attribute'] = $key1;
 						$data['Vary']['value'] = $key2;
-						$data['Vary']['type'] = 'order';
+						$data['Vary']['type'] = $inventory['Inventory']['type'];
 						$keyarry[] = $key3;
 					}
 					if(!empty($data['Vary'][$keyarry[0]]) && !empty($data['Vary'][$keyarry[1]]) && !empty($data['Vary'][$keyarry[2]])){
@@ -75,9 +75,14 @@ class InventoriesController extends AppController {
 	}
 	
 	
-	public function index() {
+	public function index($type = null) {
 		$this->Inventory->recursive = 0;
-		$this->set('inventories', $this->Paginator->paginate());
+		$start = date('Y-m-d');
+		$end = date('Y-m-d', strtotime('-2 day'));
+		//$this->Inventory->virtualFields = array('total_quantity' => 'sum(Inventory.quantity)','total_purchase_price' => 'sum(Inventory.purchase_price)','total_sale_price' => 'sum(Inventory.sale_price)');
+		$Inventory = $this->Inventory->find('all',array('conditions'=>array('Inventory.type'=>$type,array('Inventory.created >=' => $end))));
+		//debug($Inventory); //exit;
+		$this->set('inventories',$Inventory);
 	}
 
 /**
