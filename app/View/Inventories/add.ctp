@@ -14,7 +14,7 @@
 		echo $this->Form->input('purchase_price',array('div'=>false,'error'=>false,'type'=>'hidden', 'id'=>'mypurchasePrice'));
 		echo $this->Form->input('sale_price',array('div'=>false,'error'=>false,'type'=>'hidden', 'id'=>'mysalePrice'));
 		echo $this->Form->input('variant',array('div'=>false,'error'=>false,'type'=>'hidden', 'value'=>1));
-		echo $this->Form->input('type',array('div'=>false,'error'=>false, 'type'=>'select', 'options'=>array('0'=>'Select Category','order'=>'Order','sales'=>'Sales','fulfillment'=>'Fulfillment'), 'before' => '<div class="form-group">', 'after' => '</div>' , 'class'=>'validate[required] form-control' ));
+		echo $this->Form->input('type',array('div'=>false,'error'=>false, 'type'=>'select', 'options'=>array('0'=>'Select Category','order'=>'Order','sale'=>'Sales','fulfillment'=>'Fulfillment'), 'before' => '<div class="form-group">', 'after' => '</div>' , 'class'=>'validate[required] form-control' ));
 		?>
         <?php foreach($loops as $key1 => $loop){ ?>
         <div class="col-lg-12">
