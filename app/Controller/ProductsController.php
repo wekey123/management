@@ -73,8 +73,8 @@ class ProductsController extends AppController {
  *
  * @return void
  */
-	public function add() {
-		if ($this->request->is('post')) {
+	public function add() {//
+		if ($this->request->is('post')) {//echo '<pre>';print_r($this->request->data);exit;
 			$this->Product->create();
 			if ($this->Product->save($this->request->data)) {
 				$this->Flash->success(__('The product has been saved.'));

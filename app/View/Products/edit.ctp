@@ -1,34 +1,59 @@
-<div class="products form">
+<div id="page-wrapper">
 <?php echo $this->Form->create('Product'); ?>
+	<div class="addNewButton" style="float:none;">
+         <?php echo $this->Html->link(__('Back to Product'), array('action' => 'index'),array('class' => 'btn btn-primary','type'=>'button')); ?>
+        
+    </div>
 	<fieldset>
 		<legend><?php echo __('Edit Product'); ?></legend>
-	<?php
+        <div class="row">
+        <div class="col-lg-8">
+            <div class="panel panel-default">
+            	<div class="panel-heading">Products</div>              
+                <div class="panel-body"> 
+		
+	<?php //echo '<pre>';print_r($this->request->data);exit;
 		echo $this->Form->input('id');
-		echo $this->Form->input('user_id');
-		echo $this->Form->input('title');
-		echo $this->Form->input('description');
-		echo $this->Form->input('vendor');
-		echo $this->Form->input('type');
-		echo $this->Form->input('tags');
-		echo $this->Form->input('publish');
-		echo $this->Form->input('price');
-		echo $this->Form->input('list_price');
-		echo $this->Form->input('sku');
-		echo $this->Form->input('barcode');
-		echo $this->Form->input('quantity');
-		echo $this->Form->input('weight');
-		echo $this->Form->input('variants');
-		echo $this->Form->input('attributes');
-		echo $this->Form->input('values');
-		echo $this->Form->input('tax');
-		echo $this->Form->input('shipping');
-		echo $this->Form->input('published_at');
-		echo $this->Form->input('updated_at');
-	?>
+		//echo $this->Form->input('user_id');
+		echo $this->Form->input('title',array('div'=>false,'error'=>false,'type'=>'text', 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control'));
+		echo $this->Form->input('description',array('div'=>false,'error'=>false,'type'=>'textarea', 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control'));
+		echo $this->Form->input('vendor',array('div'=>false,'error'=>false,'type'=>'text', 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control'));
+		echo $this->Form->input('type',array('div'=>false,'error'=>false,'type'=>'text', 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control'));
+		echo $this->Form->input('tags',array('div'=>false,'error'=>false,'type'=>'hidden','value'=>'0'));
+		echo $this->Form->input('publish',array('div'=>false,'error'=>false,'type'=>'hidden','value'=>'1'));
+		echo $this->Form->input('price',array('div'=>false,'error'=>false,'type'=>'hidden','value'=>0));
+		echo $this->Form->input('list_price',array('div'=>false,'error'=>false,'type'=>'hidden','value'=>0));
+		echo $this->Form->input('sku',array('div'=>false,'error'=>false,'type'=>'text', 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control'));
+		echo $this->Form->input('barcode',array('div'=>false,'error'=>false,'type'=>'text', 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control'));
+		echo $this->Form->input('quantity',array('div'=>false,'error'=>false,'type'=>'hidden','value'=>0));
+		echo $this->Form->input('weight',array('div'=>false,'error'=>false,'type'=>'text', 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control'));
+		echo $this->Form->input('variants',array('div'=>false,'error'=>false,'type'=>'hidden','value'=>0));
+		echo $this->Form->input('attributes',array('div'=>false,'error'=>false,'type'=>'hidden','value'=>0,'id'=>'tagVarients'));
+		echo $this->Html->tag('label', 'Variants');
+						echo  '<ul id="eventTags">';
+						$attributes=explode(',',$this->request->data['Product']['attributes']);
+						 foreach($attributes as $optlist){
+				?>
+                <li><?php echo $optlist; ?> </li>
+                <?php 
+				 }echo '</ul>';
+		echo $this->Html->tag('label', 'Values');
+		echo  '<ul id="mySingleFieldTags">';
+		$values=explode(',',$this->request->data['Product']['values']);
+						 foreach($values as $optlist){
+				?>
+                <li><?php echo $optlist; ?> </li>
+                <?php 
+				 }echo '</ul>';
+		echo $this->Form->input('values',array('div'=>false,'error'=>false,'type'=>'hidden','value'=>0,'id'=>'tagValues'));
+	?></div>
+            </div>
+		</div>
+    </div>
 	</fieldset>
-<?php echo $this->Form->end(__('Submit')); ?>
+<?php echo $this->Form->submit(__('Submit'),array('div'=>false, 'class'=>'btn btn-lg btn-success btn-block' ,'id' => 'getVarientValue')); echo $this->Form->end();	?>
 </div>
-<div class="actions">
+<?php /*?><div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 
@@ -41,4 +66,4 @@
 		<li><?php echo $this->Html->link(__('List Varies'), array('controller' => 'varies', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Vary'), array('controller' => 'varies', 'action' => 'add')); ?> </li>
 	</ul>
-</div>
+</div><?php */?>
