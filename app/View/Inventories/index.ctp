@@ -1,70 +1,65 @@
-<div class="inventories index">
-	<h2><?php echo __('Inventories'); ?></h2>
-	<table cellpadding="0" cellspacing="0">
+<style>
+tr {
+    border-bottom: 0px solid black;
+    border-collapse: collapse;
+}
+</style>
+<div id="page-wrapper">
+
+   <div class="row">
+        <div class="col-lg-12">
+        <?php 	echo $this->Session->flash(); ?>
+        </div>
+    </div>
+
+    <div class="row">
+    
+    <div class="col-lg-12">
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4><?php echo __('Inventory '.$this->request->params['pass'][0]); ?></h4> <span>(Shows only last two days Records.)<span>
+        </div>
+   	    <div class="panel-body">
+     	   <div class="dataTable_wrapper">
+            <table cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover" id="dataTables-example" style="margin-top:15px;">
 	<thead>
 	<tr>
-			<th><?php echo $this->Paginator->sort('id'); ?></th>
-			<th><?php echo $this->Paginator->sort('user_id'); ?></th>
-			<th><?php echo $this->Paginator->sort('product_id'); ?></th>
-			<th><?php echo $this->Paginator->sort('quantity'); ?></th>
-			<th><?php echo $this->Paginator->sort('purchase_price'); ?></th>
-			<th><?php echo $this->Paginator->sort('sale_price'); ?></th>
-			<th><?php echo $this->Paginator->sort('variant'); ?></th>
-			<th><?php echo $this->Paginator->sort('type'); ?></th>
-			<th><?php echo $this->Paginator->sort('created'); ?></th>
-			<th><?php echo $this->Paginator->sort('modified'); ?></th>
+			<th><?php echo h('Title'); ?></th>
+            <th><?php echo h('Total Qty'); ?></th>
+			<th><?php echo h('Total Purchase Price'); ?></th>
+			<th><?php echo h('Total Sales Price'); ?></th>
 			<th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
 	</thead>
 	<tbody>
-	<?php foreach ($inventories as $inventory): ?>
+	<?php $total_Quantity = '';$total_purchase_price = '';$total_sale_price = ''; foreach ($inventories as $inventory): ?>
 	<tr>
-		<td><?php echo h($inventory['Inventory']['id']); ?>&nbsp;</td>
-		<td>
-			<?php echo $this->Html->link($inventory['User']['id'], array('controller' => 'users', 'action' => 'view', $inventory['User']['id'])); ?>
-		</td>
-		<td>
-			<?php echo $this->Html->link($inventory['Product']['title'], array('controller' => 'products', 'action' => 'view', $inventory['Product']['id'])); ?>
-		</td>
-		<td><?php echo h($inventory['Inventory']['quantity']); ?>&nbsp;</td>
-		<td><?php echo h($inventory['Inventory']['purchase_price']); ?>&nbsp;</td>
-		<td><?php echo h($inventory['Inventory']['sale_price']); ?>&nbsp;</td>
-		<td><?php echo h($inventory['Inventory']['variant']); ?>&nbsp;</td>
-		<td><?php echo h($inventory['Inventory']['type']); ?>&nbsp;</td>
-		<td><?php echo h($inventory['Inventory']['created']); ?>&nbsp;</td>
-		<td><?php echo h($inventory['Inventory']['modified']); ?>&nbsp;</td>
+		<td><?php echo h($inventory['Product']['title']); ?>&nbsp;</td>
+        
+		<td><?php echo $quantity = (!empty($inventory['Inventory']['quantity'])) ? $inventory['Inventory']['quantity'] : 0;  
+		$total_Quantity += $quantity; ?>&nbsp;</td>
+        
+		<td><?php $purchase_price = (!empty($inventory['Inventory']['purchase_price'])) ? $inventory['Inventory']['purchase_price'] : 0; echo '$'.$purchase_price; 
+		
+		$total_purchase_price += $purchase_price; ?>&nbsp;</td>
+        <td><?php $sale_price = (!empty($inventory['Inventory']['sale_price'])) ? $inventory['Inventory']['sale_price'] : 0; echo '$'.$sale_price;
+		
+		$total_sale_price += $sale_price; ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View'), array('action' => 'view', $inventory['Inventory']['id'])); ?>
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $inventory['Inventory']['id'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $inventory['Inventory']['id']), array('confirm' => __('Are you sure you want to delete # %s?', $inventory['Inventory']['id']))); ?>
 		</td>
+        
 	</tr>
 <?php endforeach; ?>
+		<tr><td><b>Total: </b></td><td><?php echo $total_Quantity;?>&nbsp;</td> <td><?php echo '$'.$total_purchase_price;?>&nbsp;</td> <td colspan="2"><?php echo '$'.$total_sale_price;?>&nbsp;</td></tr>
 	</tbody>
 	</table>
-	<p>
-	<?php
-	echo $this->Paginator->counter(array(
-		'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-	));
-	?>	</p>
-	<div class="paging">
-	<?php
-		echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
-		echo $this->Paginator->numbers(array('separator' => ''));
-		echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
-	?>
+    
+   			   </div>
+       		</div>
+		 </div>
+	   </div>
 	</div>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('New Inventory'), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New User'), array('controller' => 'users', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Products'), array('controller' => 'products', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Product'), array('controller' => 'products', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Varies'), array('controller' => 'varies', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Vary'), array('controller' => 'varies', 'action' => 'add')); ?> </li>
-	</ul>
 </div>
