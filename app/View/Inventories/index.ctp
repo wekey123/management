@@ -29,6 +29,7 @@ tr {
             <th><?php echo h('Total Qty'); ?></th>
 			<th><?php echo h('Total Purchase Price'); ?></th>
 			<th><?php echo h('Total Sales Price'); ?></th>
+            <th><?php echo h('Date'); ?></th>
 			<th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
 	</thead>
@@ -46,6 +47,8 @@ tr {
         <td><?php $sale_price = (!empty($inventory['Inventory']['sale_price'])) ? $inventory['Inventory']['sale_price'] : 0; echo '$'.$sale_price;
 		
 		$total_sale_price += $sale_price; ?>&nbsp;</td>
+        
+         <td><?php echo  date('m-d-Y', strtotime($inventory['Inventory']['created']));?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View'), array('action' => 'view', $inventory['Inventory']['id'])); ?>
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $inventory['Inventory']['id'])); ?>
@@ -53,7 +56,7 @@ tr {
         
 	</tr>
 <?php endforeach; ?>
-		<tr><td><b>Total: </b></td><td><?php echo $total_Quantity;?>&nbsp;</td> <td><?php echo '$'.$total_purchase_price;?>&nbsp;</td> <td colspan="2"><?php echo '$'.$total_sale_price;?>&nbsp;</td></tr>
+		<tr><td><b>Total: </b></td><td><?php echo $total_Quantity;?>&nbsp;</td> <td><?php echo '$'.$total_purchase_price;?>&nbsp;</td> <td><?php echo '$'.$total_sale_price;?>&nbsp;</td><td colspan="2">&nbsp;</td></tr>
 	</tbody>
 	</table>
     

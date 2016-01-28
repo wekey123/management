@@ -80,7 +80,7 @@ class InventoriesController extends AppController {
 		$start = date('Y-m-d');
 		$end = date('Y-m-d', strtotime('-2 day'));
 		//$this->Inventory->virtualFields = array('total_quantity' => 'sum(Inventory.quantity)','total_purchase_price' => 'sum(Inventory.purchase_price)','total_sale_price' => 'sum(Inventory.sale_price)');
-		$Inventory = $this->Inventory->find('all',array('conditions'=>array('Inventory.type'=>$type,array('Inventory.created >=' => $end))));
+		$Inventory = $this->Inventory->find('all',array('conditions'=>array('Inventory.type'=>$type,array('Inventory.created >=' => $end)),'order'=>array('Inventory.created' => 'desc')));
 		//debug($Inventory); //exit;
 		$this->set('inventories',$Inventory);
 	}
