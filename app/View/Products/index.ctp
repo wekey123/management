@@ -45,7 +45,7 @@ tr {
 		<td><?php echo $orderQty = (!empty($product['Product']['order_qty'])) ? $product['Product']['order_qty'] : 0; ?>&nbsp;</td>
 		<td><?php echo (!empty($product['Product']['order_purchase_price'])) ? '$'.$product['Product']['order_purchase_price'] : 0; ?>&nbsp;</td>
         
-		<td><?php echo $salesQty = (!empty($product['Product']['sale_qty']))? '$'.$product['Product']['sale_qty'] : 0; ?>&nbsp;</td>      
+		<td><?php echo $salesQty = (!empty($product['Product']['sale_qty']))? $product['Product']['sale_qty'] : 0; ?>&nbsp;</td>      
 		<td><?php echo (!empty($product['Product']['sale_sale_price'])) ? '$'.$product['Product']['sale_sale_price'] : 0; ?>&nbsp;</td>
         
         <td><?php echo $orderQty - $salesQty;  ?>&nbsp;</td>

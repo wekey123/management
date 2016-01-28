@@ -18,7 +18,7 @@ tr {
     
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h4><?php echo __('Inventory '.$this->request->params['pass'][0]); ?></h4> <span>(Shows only last two days Records.)<span>
+            <h4><?php echo __('Inventory '.$this->request->params['pass'][0]); ?></h4> <span>(Shows only last <?php echo $records;?> days Records.)<span>
         </div>
    	    <div class="panel-body">
      	   <div class="dataTable_wrapper">
