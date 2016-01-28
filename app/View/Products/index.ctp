@@ -13,9 +13,11 @@ tr {
     </div>
 
     <div class="row">
-    
+    <div class="col-lg-12 addNewButton">
+            <?php echo $this->Html->link(__('New Product'), array('action' => 'add'),array('class' => 'btn btn-primary','type'=>'button')); ?>
+        </div>
     <div class="col-lg-12">
-    
+     
     <div class="panel panel-default">
         <div class="panel-heading">
             <?php echo __('Products'); ?>

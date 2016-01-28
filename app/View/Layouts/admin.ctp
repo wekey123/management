@@ -20,19 +20,8 @@
 	echo $this->Html->css('tag/tagit.ui-zendesk'); 
 	echo $this->Html->css('font-awesome-4.1.0/css/font-awesome.min');
 	echo $this->Html->css('dataTables/dataTables.responsive.css'); 
-	echo $this->Html->css('dataTables/dataTables.responsive.css'); 
 	?>
-    <?php /*?><?php 
-	echo $this->Html->script('jquery.min'); 
-	echo $this->Html->script('yalachi');
-	echo $this->Html->script('bootstrap.min');
-	echo $this->Html->script('sb-admin-2');
-	echo $this->Html->script('plugins/metisMenu/metisMenu.min');
-	echo $this->Html->script('plugins/morris/raphael.min');
-	echo $this->Html->script('tinymce/tinymce.min');
-	//echo $this->Html->script('plugins/morris/morris.min');
-	//echo $this->Html->script('plugins/morris/morris-data');
-	?><?php */?>
+   
     <style>
 	#page-wrapper{
 	padding-bottom:20px;
@@ -44,8 +33,7 @@
 <body><?php 
 	echo $this->Html->script('jquery.min');
 	echo $this->Html->script('jquery-ui.min');
-	echo $this->Html->script('selectivity-full.js');
-	echo $this->Html->script('yalachi');
+	//echo $this->Html->script('selectivity-full.js');
 	echo $this->Html->script('bootstrap.min');
 	echo $this->Html->script('tag-it.min');
 	
@@ -53,8 +41,8 @@
 	//echo $this->Html->script('plugins/morris/raphael.min');
 	//echo $this->Html->script('plugins/morris/morris.min');
 	//echo $this->Html->script('plugins/morris/morris-data');
-	echo $this->Html->script('dataTables/jquery.dataTables.min.js'); 
-	echo $this->Html->script('dataTables/dataTables.bootstrap.min.js'); 
+	//echo $this->Html->script('dataTables/jquery.dataTables.min.js'); 
+	//echo $this->Html->script('dataTables/dataTables.bootstrap.min.js'); 
 	echo $this->Html->script('sb-admin-2');
 	?>
     <div id="wrapper">
@@ -68,9 +56,9 @@
 	 <script>
 		$(document).ready(function() {
 			 $('#varient_body').hide();
-			$('#multiple-select-box').selectivity();
-			$('#multiple-select-box-edit').selectivity();
-			$('#emails-input').selectivity({
+			//$('#multiple-select-box').selectivity();
+			//$('#multiple-select-box-edit').selectivity();
+		/*	$('#emails-input').selectivity({
 					inputType: 'Email',
                     placeholder: 'Enter option',
              }); 
@@ -100,7 +88,7 @@
 				  }
 					
 					//console.log(counter);
-             });
+             });*/
 			 var varenb;
 			 $(".varient-enable").click(function () {
 				 if(!varenb){
@@ -118,25 +106,23 @@
 			 });
 			 
 			  $("#getVarientValue").click(function () {
-				 var arr = [];
-					var price,sku,barcode,Varoptions,newDiv;
-					for(i=1; i<counter; i++){
-						price = $('#price' + i).val();
-						sku=  $('#sku' + i).val();
-						barcode = $('#barcode' + i).val();
-						Varoptions= $('span[class="selectivity-multiple-selected-item"]').eq(i-1).attr('data-item-id');
-						newDiv = $(document.createElement('div')).attr("id", 'ProductVarientPrice' + i);
-						newDiv.after().html('<input type="hidden" name="data[ProductVarient][val]['+i+'][price]" value="'+price+'"><input type="hidden" name="data[ProductVarient][val]['+i+'][sku]" value="'+sku+'"><input type="hidden" name="data[ProductVarient][val]['+i+'][barcode]" value="'+barcode+'"><input type="hidden" name="data[ProductVarient][val]['+i+'][options_values]" value="'+Varoptions+'">');
-						newDiv.appendTo("#varient-wrapper");
-					}
-					//alert($('#varient-wrapper').html());
-					//return false;
+				   var data = [];var data1 = [];
+				 $("#eventTags li input").each(function(i) {
+					  data.push($.trim($(this).val()));
+				});
+				$("#mySingleFieldTags li input").each(function(i) {
+					  data1.push($.trim($(this).val()));
+				});
+				
+				$('#tagVarients').val(data.join(","));
+				$('#tagValues').val(data1.join(","));
+				//return false;
 			});
 			 
 			 
-			$('#dataTables-example').DataTable({
+			/*$('#dataTables-example').DataTable({
 					responsive: true
-			});
+			});*/
 		});
 	
 		/*function initMCEexact(e){
@@ -163,7 +149,7 @@
             // Minimal
             //-------------------------------
             $('#myTags').tagit();
-
+			$("#mySingleFieldTags").tagit();
             
 
             //-------------------------------
@@ -173,6 +159,7 @@
 
             var addEvent = function(text) {
                 $('#events_container').append(text + '<br>');
+				
             };
 			var arr = [];
             eventTags.tagit({
@@ -180,15 +167,6 @@
                 beforeTagAdded: function(evt, ui) {
                     if (!ui.duringInitialization) {
                         addEvent('beforeTagAdded: ' + eventTags.tagit('tagLabel', ui.tag));
-						arr.push(ui);
-						var counter = arr.length - 1
-						console.log(evt);console.log(arr);console.log(arr.length - 1);
-						var newTextBoxDiv = $(document.createElement('div'))
-						 .attr("id", ui.tagLabel);
-								
-					newTextBoxDiv.after().html('<div class="varient-group"><label>price</label><input type="text" id="price' + counter + '" value=""  name="data[ProductVarient][val]['+counter+'][price]" ></div><div class="varient-group"><label>SKU</label><input type="text" id="sku' + counter + '" value="" name="data[ProductVarient][val]['+counter+'][sku]" ></div><div class="varient-group"><label>BarCode</label><input type="text" id="barcode' + counter + '" value="" name="data[ProductVarient][val]['+counter+'][barcode]" ><input type="hidden" name="data[ProductVarient][val]['+counter+'][options_values]" value="'+ui.tagLabel+'"></div>');
-							
-					newTextBoxDiv.appendTo("#TextBoxesGroup");
                     }
                 },
                 afterTagAdded: function(evt, ui) {

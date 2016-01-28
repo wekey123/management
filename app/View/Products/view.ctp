@@ -1,16 +1,22 @@
 <div class="products view">
+<div class="addNewButton" style="float:none;">
+         <?php echo $this->Html->link(__('Back to Product'), array('action' => 'index'),array('class' => 'btn btn-primary','type'=>'button')); ?>
+         
+         <?php echo $this->Html->link(__('Add Product'), array('action' => 'add'),array('class' => 'btn btn-primary','type'=>'button')); ?>
+    </div>
+
 <h2><?php echo __('Product'); ?></h2>
 	<dl>
-		<dt><?php echo __('Id'); ?></dt>
+		<?php /*?><dt><?php echo __('Id'); ?></dt>
 		<dd>
 			<?php echo h($product['Product']['id']); ?>
 			&nbsp;
-		</dd>
-		<dt><?php echo __('User'); ?></dt>
+		</dd><?php */?>
+		<?php /*?><dt><?php echo __('User'); ?></dt>
 		<dd>
 			<?php echo $this->Html->link($product['User']['id'], array('controller' => 'users', 'action' => 'view', $product['User']['id'])); ?>
 			&nbsp;
-		</dd>
+		</dd><?php */?>
 		<dt><?php echo __('Title'); ?></dt>
 		<dd>
 			<?php echo h($product['Product']['title']); ?>
@@ -31,12 +37,12 @@
 			<?php echo h($product['Product']['type']); ?>
 			&nbsp;
 		</dd>
-		<dt><?php echo __('Tags'); ?></dt>
+		<?php /*?><dt><?php echo __('Tags'); ?></dt>
 		<dd>
 			<?php echo h($product['Product']['tags']); ?>
 			&nbsp;
-		</dd>
-		<dt><?php echo __('Publish'); ?></dt>
+		</dd><?php */?>
+		<?php /*?><dt><?php echo __('Publish'); ?></dt>
 		<dd>
 			<?php echo h($product['Product']['publish']); ?>
 			&nbsp;
@@ -50,7 +56,7 @@
 		<dd>
 			<?php echo h($product['Product']['list_price']); ?>
 			&nbsp;
-		</dd>
+		</dd><?php */?>
 		<dt><?php echo __('Sku'); ?></dt>
 		<dd>
 			<?php echo h($product['Product']['sku']); ?>
@@ -61,12 +67,12 @@
 			<?php echo h($product['Product']['barcode']); ?>
 			&nbsp;
 		</dd>
-		<dt><?php echo __('Quantity'); ?></dt>
+		<?php /*?><dt><?php echo __('Quantity'); ?></dt>
 		<dd>
 			<?php echo h($product['Product']['quantity']); ?>
 			&nbsp;
 		</dd>
-		<dt><?php echo __('Weight'); ?></dt>
+<?php */?>		<dt><?php echo __('Weight'); ?></dt>
 		<dd>
 			<?php echo h($product['Product']['weight']); ?>
 			&nbsp;
@@ -86,7 +92,7 @@
 			<?php echo h($product['Product']['values']); ?>
 			&nbsp;
 		</dd>
-		<dt><?php echo __('Tax'); ?></dt>
+		<?php /*?><dt><?php echo __('Tax'); ?></dt>
 		<dd>
 			<?php echo h($product['Product']['tax']); ?>
 			&nbsp;
@@ -105,10 +111,10 @@
 		<dd>
 			<?php echo h($product['Product']['updated_at']); ?>
 			&nbsp;
-		</dd>
+		</dd><?php */?>
 	</dl>
 </div>
-<div class="actions">
+<?php /*?><div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('Edit Product'), array('action' => 'edit', $product['Product']['id'])); ?> </li>
@@ -216,4 +222,4 @@
 			<li><?php echo $this->Html->link(__('New Vary'), array('controller' => 'varies', 'action' => 'add')); ?> </li>
 		</ul>
 	</div>
-</div>
+</div><?php */?>
