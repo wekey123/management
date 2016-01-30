@@ -13,7 +13,12 @@ tr {
     </div>
 
     <div class="row">
-    
+     <div class="col-lg-12 addNewButton">
+            <?php 
+			$type = $this->request->params['pass'][0];
+			echo $this->Html->link(__('Add '.ucfirst($type).' Inventory'), array('action' => 'add',$type),array('class' => 'btn btn-primary','type'=>'button')); 
+			?>
+        </div>
     <div class="col-lg-12">
     
     <div class="panel panel-default">

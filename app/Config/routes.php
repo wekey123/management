@@ -27,7 +27,7 @@
  */
 	//Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'home'));
 	Router::connect('/', array('controller' => 'users', 'action' => 'login'));
-	Router::connect('/inventories', array('controller' => 'inventories', 'action' => 'index', 'order'));
+	//Router::connect('/inventories', array('controller' => 'inventories', 'action' => 'index', 'order'));
 	Router::connect('/inventories/order', array('controller' => 'inventories', 'action' => 'index', 'order'));
 	Router::connect('/inventories/sale', array('controller' => 'inventories', 'action' => 'index', 'sale'));
 	Router::connect('/inventories/fulfillment', array('controller' => 'inventories', 'action' => 'index', 'fulfillment'));

@@ -6,34 +6,28 @@
         <div class="col-lg-12">
             <div class="panel panel-default">
             	<div class="panel-heading">Products</div>              
-                <div class="panel-body">           
+                <div class="panel-body">
 		<?php 		
-		echo $this->Form->input('user_id',array('div'=>false,'error'=>false,'type'=>'hidden', 'value'=>$data['user_id']));
-		echo $this->Form->input('product_id',array('div'=>false,'error'=>false,'type'=>'hidden', 'value'=>$data['product_id']));
+		echo $this->Form->input('user_id',array('div'=>false,'error'=>false,'type'=>'hidden','value'=>$data['user_id']));
+
+			echo $this->Form->input('product_id',array('div'=>false,'error'=>false,'before' => '<div class="form-group">', 'after' => '</div>' , 'class'=>'validate[required] form-control',$product_selected));
+			if($product_selected == 'disabled'){
+				echo $this->Form->input('product_id',array('div'=>false,'error'=>false,'type'=>'hidden'));
+			}
+
+			echo $this->Form->input('type',array('div'=>false,'error'=>false, 'type'=>'select', 'options'=>array('0'=>'Select Category','order'=>'Order','fulfillment'=>'Fulfillment','sale'=>'Sales'), 'before' => '<div class="form-group">', 'after' => '</div>' , 'class'=>'validate[required] form-control',$type_selected));
+			if($type_selected == 'disabled'){
+				echo $this->Form->input('type',array('div'=>false,'error'=>false,'type'=>'hidden'));
+			}
+			
 		echo $this->Form->input('quantity',array('div'=>false,'error'=>false,'type'=>'hidden', 'id'=>'myQuan'));
 		echo $this->Form->input('purchase_price',array('div'=>false,'error'=>false,'type'=>'hidden', 'id'=>'mypurchasePrice'));
 		echo $this->Form->input('sale_price',array('div'=>false,'error'=>false,'type'=>'hidden', 'id'=>'mysalePrice'));
 		echo $this->Form->input('variant',array('div'=>false,'error'=>false,'type'=>'hidden', 'value'=>1));
-		echo $this->Form->input('type',array('div'=>false,'error'=>false, 'type'=>'select', 'options'=>array('0'=>'Select Category','order'=>'Order','sale'=>'Sales','fulfillment'=>'Fulfillment'), 'before' => '<div class="form-group">', 'after' => '</div>' , 'class'=>'validate[required] form-control' ));
+		
 		?>
-        <?php foreach($loops as $key1 => $loop){ ?>
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading"><?php echo $key1;?></div>              
-                <div class="panel-body"> 
-			<?php foreach($loop as $key2 => $value){  ?>
-              <div class="col-lg-4">
-            		<div class="panel panel-default">
-                        <div class="panel-heading"><?php echo $key2;?></div>              
-                        <div class="panel-body"> 
-					  <?php foreach($value as $key3 => $fields){ ?>
-							<?php echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false, 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control invent_'.$fields,'placeholder'=>'Order Quantity','id'=>'pTitle','required'=>false)); ?>
-					  <?php } ?>
-                      </div></div></div>
-			<?php } ?>
-            </div></div></div>
-		<?php } ?>
-
+        
+			<div id='result'></div>
         
         
        <br /> 
@@ -44,6 +38,24 @@
 <?php echo $this->Form->submit(__('Submit'),array('div'=>false, 'class'=>'btn btn-lg btn-success btn-block' ,'id' => 'getVarientValue')); echo $this->Form->end();	?>
 </div>
 <script>
+$( "#InventoryType" ).change(function() {
+	var ProductId = $('#InventoryProductId').val();
+	var ProductType = $(this).val();
+    $.post("/inventories/getform/"+ProductId+'/'+ProductType, function(data, status){
+		console.log(data); 
+		$('#result').html(data);
+    });
+});
+
+$( "#InventoryProductId" ).change(function() {
+	var ProductId = $(this).val();
+	var ProductType = $('#InventoryType').val();
+    $.post("/inventories/getform/"+ProductId+'/'+ProductType, function(data, status){
+		console.log(data); 
+		$('#result').html(data);
+    });
+});
+
 $('#getVarientValue').click(function() {
 	var myQuan=0,mysalePrice=0,mypurchasePrice=0;
 	

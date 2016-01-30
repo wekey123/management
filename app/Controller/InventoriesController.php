@@ -25,17 +25,14 @@ class InventoriesController extends AppController {
  * @return void
  */
  	public function add($id) {
-		//$this->layout = '';
-		if ($this->request->is('post')) {	
+		if ($this->request->is('post')) {
 			$loops = $this->request->data;
 			$inventory['Inventory'] = $this->request->data['Inventory'];
 			$this->Inventory->create();
 			$this->Inventory->save($inventory);
 			$inventory['Inventory']['inventory_id'] = $this->Inventory->getInsertID();
 			foreach($loops as $key1=> $loop){
-				
 				foreach($loop as $key2=> $value){
-					
 					foreach($value as $key3=> $fields){
 						$data['Vary']['user_id'] = $inventory['Inventory']['user_id'];
 						$data['Vary']['inventory_id'] = $inventory['Inventory']['inventory_id'];
@@ -46,32 +43,59 @@ class InventoriesController extends AppController {
 						$data['Vary']['type'] = $inventory['Inventory']['type'];
 						$keyarry[] = $key3;
 					}
-					if(!empty($data['Vary'][$keyarry[0]]) && !empty($data['Vary'][$keyarry[1]]) && !empty($data['Vary'][$keyarry[2]])){
+				    if(!empty($data['Vary'][$keyarry[0]]) && !empty($data['Vary'][$keyarry[1]]) && !empty($data['Vary'][$keyarry[2]])){
 						$this->Vary->create();
 						$this->Vary->save($data);
-						$this->redirect(array('controller'=>'products','action'=>'index'));
 					}
 				}
 			}
+			$this->redirect(array('controller'=>'products','action'=>'index'));
 		}else{
-			$Products = $this->Product->find('first',array('conditions'=>array('Product.id'=>$id)));
-			$attributes = explode(',',$Products['Product']['attributes']);
-			$values = explode(',',$Products['Product']['values']);
-			$fields = array('quantity','purchase_price','sale_price');
-			$count = count($values);
-			foreach($attributes as $key1 => $attr){
-				for($i = 1; $i <= $count; $i++){
-					foreach($values as $key1 => $value){
-					 $loop[$attr][$value] = $fields;
-					}
-				}
-			}
-			$this->set('loops',$loop);
 			$readSession = $this->Session->read();
+			$this->Product->unbindModel(array('hasMany' => array('Inventory','Vary')));
+			$this->set('products',$this->Product->find('list',array('fields'=>array('Product.title')))); //exit;
+			if(is_numeric($id)){
+				$this->request->data['Inventory']['product_id'] = $id;
+				$this->set('product_selected','disabled');
+				$this->set('type_selected','1');
+			}else{
+				$this->request->data['Inventory']['type'] = $id;
+				$this->set('product_selected','1');
+				$this->set('type_selected','disabled');
+			}
 			$datas['user_id'] = $readSession['User']['id'];
-			$datas['product_id'] = $id;
 			$this->set('data',$datas);
 		}
+	}
+	
+	public function getform($id = null,$type = null){
+		$this->layout = '';
+		if($type == 'order'){
+			$this->Product->unbindModel(array('hasMany' => array('Inventory','Vary')));
+			$Products = $this->Product->find('first',array('conditions'=>array('Product.id'=>$id),'fields'=>array('Product.id','Product.attributes','Product.values')));
+			$attributes = explode(',',$Products['Product']['attributes']);
+			$values = explode(',',$Products['Product']['values']);
+		}else{
+			$this->Vary->unbindModel(array('belongsTo' => array('User','Inventory','Product')));
+			$Products = $this->Vary->find('all',array('conditions'=>array('Vary.product_id'=>$id,'Vary.type'=>'order'),'fields'=>array('Vary.id','Vary.attribute','Vary.value')));
+			foreach($Products as $product){
+				$vary_attribute[] = $product['Vary']['attribute'];
+				$vary_value[] = $product['Vary']['value'];
+			}
+			$attributes = array_unique($vary_attribute);
+			$values = array_unique($vary_value);
+		}
+		
+		$fields = array('quantity','purchase_price','sale_price');
+		$count = count($values);
+		foreach($attributes as $key1 => $attr){
+			for($i = 1; $i <= $count; $i++){
+				foreach($values as $key1 => $value){
+				 $loop[$attr][$value] = $fields;
+				}
+			}
+		}
+		$this->set('loops',$loop);
 	}
 	
 	

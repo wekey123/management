@@ -30,6 +30,17 @@ class ProductsController extends AppController {
 		$this->Product->recursive = 1;
 		$Products = $this->Product->find('all');	
 		foreach($Products as $product) {
+			
+				 $product['Product']['order_qty'] = 0;
+				 $product['Product']['order_purchase_price'] = 0;
+				 $product['Product']['order_sale_price'] = 0;
+				 $product['Product']['fulfill_qty'] = 0;
+				 $product['Product']['fulfill_purchase_price'] = 0;
+				 $product['Product']['fulfill_sale_price'] = 0;
+				 $product['Product']['sale_qty'] = 0;
+				 $product['Product']['sale_purchase_price'] = 0;
+				 $product['Product']['sale_sale_price'] = 0;
+				 
 			foreach($product['Inventory'] as $Inventory) {
 			 if($Inventory['type'] == 'order'){
 				 $product['Product']['order_qty'] += $Inventory['quantity'];
