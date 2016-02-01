@@ -28,7 +28,8 @@ class ProductsController extends AppController {
 				
 		$this->layout = 'adminhome';
 		$this->Product->recursive = 1;
-		$Products = $this->Product->find('all');	
+		$Products = $this->Product->find('all');
+		if(!empty($Products)){	
 		foreach($Products as $product) {
 			
 				 $product['Product']['order_qty'] = 0;
@@ -58,7 +59,26 @@ class ProductsController extends AppController {
 				 $product['Product']['sale_sale_price'] += $Inventory['sale_price'];
 			 }
 			}
+			$i=0;
+			foreach($product['Vary'] as $vary){
+				if($vary['type']=='sale'){
+					$product['attribute'][$vary['attribute']][$vary['value']]['quantity'] +=$vary['quantity'];
+					$product['attribute'][$vary['attribute']][$vary['value']]['sale_price'] +=$vary['sale_price'];
+					$product['attribute'][$vary['attribute']][$vary['value']]['total_sale_price'] +=$vary['quantity']*$vary['sale_price'];
+				}
+			$i++;
+			}
+			
 			$result[] = $product;
+		}
+		}
+		else
+		$result = '';
+		foreach ($product['Vary'] as $salesVary){
+			if($salesVary['type']=='sale'){
+				//echo '<p>'.$salesVary['attribute'].'</p>';
+				$newSalesVary[]=$salesVary;
+			}
 		}
 		$this->set('products',$result);
 	}
