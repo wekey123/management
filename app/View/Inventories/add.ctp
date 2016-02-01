@@ -56,26 +56,17 @@ $( "#InventoryProductId" ).change(function() {
 
 $('#getVarientValue').click(function() {
 	var myQuan=0,mysalePrice=0,mypurchasePrice=0;
-	var AllmysaleOnlyPrice=0;
 	
 		$('.invent_quantity').each(function() {
 			myQuan += (isNaN(parseInt($( this ).val()))) ? 0 : parseInt($( this ).val());
 		});
-		$('#myQuan').val(myQuan);
-		
-		$('.invent_purchase_price').each(function() {
-			mypurchasePrice += (isNaN(parseFloat($( this ).val()))) ? 0 : (parseFloat($( this ).val()) *  parseInt($('#myQuan').val()));
-		});
-		$('#mypurchasePrice').val(mypurchasePrice);
-		
-		$('.invent_sale_price').each(function() {
-			mysalePrice += (isNaN(parseFloat($( this ).val()))) ? 0 : (parseFloat($( this ).val()) *  parseInt($('#myQuan').val()));
-		});
-		$('#mysalePrice').val(mysalePrice);
-		
 		$('#tab div.col-lg-4').each(function() {
-			AllmysaleOnlyPrice += (isNaN(parseFloat($( this ).find('input.invent_purchase_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_purchase_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
+			mypurchasePrice += (isNaN(parseFloat($( this ).find('input.invent_purchase_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_purchase_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
+			mysalePrice += (isNaN(parseFloat($( this ).find('input.invent_sale_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_purchase_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
 		});
+		$('#myQuan').val(myQuan);
+		$('#mypurchasePrice').val(mypurchasePrice);
+		$('#mysalePrice').val(mysalePrice);
 }); 
 
 </script>
