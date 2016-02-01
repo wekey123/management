@@ -41,7 +41,7 @@ tr {
 	<tbody>
 	<?php $total_Quantity = '';$total_purchase_price = '';$total_sale_price = ''; foreach ($inventories as $inventory): ?>
 	<tr>
-		<td><?php echo h($inventory['Product']['title']); ?>&nbsp;</td>
+		<td><?php echo $this->Html->link(__($inventory['Product']['title']), array('action' => 'view', $inventory['Inventory']['id']));?>&nbsp;</td>
         
 		<td><?php echo $quantity = (!empty($inventory['Inventory']['quantity'])) ? $inventory['Inventory']['quantity'] : 0;  
 		$total_Quantity += $quantity; ?>&nbsp;</td>
@@ -56,7 +56,7 @@ tr {
          <td><?php echo  date('m-d-Y', strtotime($inventory['Inventory']['created']));?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View'), array('action' => 'view', $inventory['Inventory']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $inventory['Inventory']['id'])); ?>
+			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $inventory['Inventory']['id'], $inventory['Inventory']['type'])); ?>
 		</td>
         
 	</tr>

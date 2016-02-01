@@ -53,7 +53,9 @@ class InventoriesController extends AppController {
 		}else{
 			$readSession = $this->Session->read();
 			$this->Product->unbindModel(array('hasMany' => array('Inventory','Vary')));
-			$this->set('products',$this->Product->find('list',array('fields'=>array('Product.title')))); //exit;
+			$select1=array(0=>'Select a Product');
+   			$select2=$this->Product->find('list',array('fields'=>array('Product.title')));
+  			$this->set('products',array_merge($select1, $select2)); //exit;
 			if(is_numeric($id)){
 				$this->request->data['Inventory']['product_id'] = $id;
 				$this->set('product_selected','disabled');
@@ -95,6 +97,7 @@ class InventoriesController extends AppController {
 				}
 			}
 		}
+		//debug($loop); exit;
 		$this->set('loops',$loop);
 	}
 	
@@ -154,7 +157,7 @@ class InventoriesController extends AppController {
  * @param string $id
  * @return void
  */
-	public function edit($id = null) {
+	/*public function editold($id = null) {
 		if (!$this->Inventory->exists($id)) {
 			throw new NotFoundException(__('Invalid inventory'));
 		}
@@ -172,6 +175,76 @@ class InventoriesController extends AppController {
 		$users = $this->Inventory->User->find('list');
 		$products = $this->Inventory->Product->find('list');
 		$this->set(compact('users', 'products'));
+	}*/
+	
+	public function edit($id = null,$type = null) {
+		
+		if ($this->request->is(array('post', 'put'))) {
+			$loops = $this->request->data;
+			$inventory['Inventory'] = $this->request->data['Inventory'];
+			$this->Inventory->save($inventory);
+			//debug($inventory);//exit;
+			foreach($loops as $key1=> $loop){
+				foreach($loop as $key2=> $value){
+					foreach($value as $key3=> $fields){
+						if($key3 == 'id'){
+							$data['Vary']['id'] = $fields;
+						}
+						$data['Vary'][$key3] = $fields;
+						$data['Vary']['user_id'] = $inventory['Inventory']['user_id'];
+						$data['Vary']['inventory_id'] = $inventory['Inventory']['id'];
+						$data['Vary']['product_id'] = $inventory['Inventory']['product_id'];
+						$data['Vary']['attribute'] = $key1;
+						$data['Vary']['value'] = $key2;
+						$data['Vary']['type'] = $inventory['Inventory']['type'];
+						$keyarry[] = $key3;
+					}
+					if($keyarry[0] == 'id'){
+						$this->Vary->save($data);
+					}else{
+				    	if(!empty($data['Vary'][$keyarry[0]]) && !empty($data['Vary'][$keyarry[1]]) && !empty($data['Vary'][$keyarry[2]])){
+							unset($data['Vary']['id']);
+							$this->Vary->create();
+							$this->Vary->save($data);
+							//debug($data); //exit;
+						}
+					}
+					unset($keyarry);
+				}
+			}
+			$this->redirect(array('controller'=>'products','action'=>'index'));
+		}else{	//echo 'mm'; exit;
+			$readSession = $this->Session->read();
+			$this->Product->unbindModel(array('hasMany' => array('Inventory','Vary')));
+			$this->set('products',$this->Product->find('list',array('fields'=>array('Product.title'))));
+			if(is_numeric($id) && !empty($type)){
+				$this->set('product_selected','disabled');
+				$this->set('type_selected','disabled');
+				$options = array('conditions' => array('Inventory.' . $this->Inventory->primaryKey => $id,'Inventory.type'=>$type));
+				$this->Inventory->unbindModel(array('belongsTo' => array('User')));
+				$inventory = $this->Inventory->find('first', $options);
+				$attributes = explode(',',$inventory['Product']['attributes']);
+				$values = explode(',',$inventory['Product']['values']);
+				$fields = array('quantity','purchase_price','sale_price');
+				$count = count($values);
+				foreach($attributes as $key1 => $attr){
+					for($i = 1; $i <= $count; $i++){
+						foreach($values as $key1 => $value){
+						 $loop[$attr][$value] = $fields;
+						}
+					}
+				}
+				$this->set('loops',$loop);
+				
+				foreach($inventory['Vary'] as  $data){
+					$update_loop[$data['attribute']][$data['value']] = array('id'=>$data['id'],'quantity'=> $data['quantity'],'purchase_price'=>$data['purchase_price'],'sale_price'=>$data['sale_price']);
+				}
+				$this->request->data = array_merge($update_loop,$inventory);
+debug($this->request->data);
+			}
+			$datas['user_id'] = $readSession['User']['id'];
+			$this->set('data',$datas);
+		}
 	}
 
 /**
