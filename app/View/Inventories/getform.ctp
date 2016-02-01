@@ -1,5 +1,15 @@
-<?php foreach($loops as $key1 => $loop){ ?>
-		  <div class="col-lg-12">
+<div id="tab">
+<ul style="width:100%;float:left;">
+<?php 
+$i=1;foreach($loops as $Titlekey => $loopTitle){?>
+    <li style="list-style:none; float:left; margin-left:20px;">    
+    <a href="#tabs-<?php echo $i;?>"><?php echo strtoupper($Titlekey);?></a> 
+    </li>   
+<?php $i++;} ?>
+</ul>
+<?php $i=1;foreach($loops as $key1 => $loop){ ?> 
+		
+		  <div class="col-lg-12" id="tabs-<?php echo $i ?>">
             <div class="panel panel-default">
                 <div class="panel-heading"><?php echo strtoupper($key1);?></div>              
                 <div class="panel-body"> 
@@ -27,4 +37,5 @@
             	</div>
              </div>
            </div>
-<?php } ?>
+<?php $i++;} ?>
+</div>

@@ -9,8 +9,7 @@
                 <div class="panel-body">
 		<?php 		
 		echo $this->Form->input('user_id',array('div'=>false,'error'=>false,'type'=>'hidden','value'=>$data['user_id']));
-
-			echo $this->Form->input('product_id',array('div'=>false,'error'=>false,'before' => '<div class="form-group">', 'after' => '</div>' , 'class'=>'validate[required] form-control',$product_selected));
+			echo $this->Form->input('product_id',array('div'=>false,'error'=>false,'before' => '<div class="form-group">', 'after' => '</div>' , 'class'=>'validate[required] form-control'));
 			if($product_selected == 'disabled'){
 				echo $this->Form->input('product_id',array('div'=>false,'error'=>false,'type'=>'hidden'));
 			}
@@ -26,9 +25,8 @@
 		echo $this->Form->input('variant',array('div'=>false,'error'=>false,'type'=>'hidden', 'value'=>1));
 		
 		?>
-        
+       
 			<div id='result'></div>
-        
         
        <br /> 
  </div>
@@ -62,16 +60,12 @@ $('#getVarientValue').click(function() {
 		$('.invent_quantity').each(function() {
 			myQuan += (isNaN(parseInt($( this ).val()))) ? 0 : parseInt($( this ).val());
 		});
+		$('#tab div.col-lg-4').each(function() {
+			mypurchasePrice += (isNaN(parseFloat($( this ).find('input.invent_purchase_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_purchase_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
+			mysalePrice += (isNaN(parseFloat($( this ).find('input.invent_sale_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_purchase_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
+		});
 		$('#myQuan').val(myQuan);
-		
-		$('.invent_purchase_price').each(function() {
-			mypurchasePrice += (isNaN(parseFloat($( this ).val()))) ? 0 : (parseFloat($( this ).val()) *  parseInt($('#myQuan').val()));
-		});
 		$('#mypurchasePrice').val(mypurchasePrice);
-		
-		$('.invent_sale_price').each(function() {
-			mysalePrice += (isNaN(parseFloat($( this ).val()))) ? 0 : (parseFloat($( this ).val()) *  parseInt($('#myQuan').val()));
-		});
 		$('#mysalePrice').val(mysalePrice);
 }); 
 

@@ -54,7 +54,14 @@
 	
 	
 	 <script>
+	 	$(document).ajaxComplete(function(){
+			$(function() {
+				$( "#tab" ).tabs({effect: 'ajax'});
+			 });
+		})
 		$(document).ready(function() {
+			
+			$('.actions').unbind('click');
 			 $('#varient_body').hide();
 			//$('#multiple-select-box').selectivity();
 			//$('#multiple-select-box-edit').selectivity();
@@ -205,7 +212,7 @@
                 availableTags: sampleTags,
                 removeConfirmation: true
             });
-            $('#'+ui.tagLabel).remove();
+           // $('#'+ui.tagLabel).remove();
         });
    </script>
 
