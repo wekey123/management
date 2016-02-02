@@ -212,7 +212,7 @@ class InventoriesController extends AppController {
 					unset($keyarry);
 				}
 			}
-			$this->redirect(array('controller'=>'products','action'=>'index'));
+			$this->redirect(array('controller'=>'inventories','action'=>'index',$type));
 		}else{	//echo 'mm'; exit;
 			$readSession = $this->Session->read();
 			$this->Product->unbindModel(array('hasMany' => array('Inventory','Vary')));
