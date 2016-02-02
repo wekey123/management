@@ -62,7 +62,7 @@ $('#getVarientValue').click(function() {
 		});
 		$('#tab div.col-lg-4').each(function() {
 			mypurchasePrice += (isNaN(parseFloat($( this ).find('input.invent_purchase_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_purchase_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
-			mysalePrice += (isNaN(parseFloat($( this ).find('input.invent_sale_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_purchase_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
+			mysalePrice += (isNaN(parseFloat($( this ).find('input.invent_sale_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_sale_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
 		});
 		$('#myQuan').val(myQuan);
 		$('#mypurchasePrice').val(mypurchasePrice);

@@ -1,5 +1,11 @@
-<div class="inventories view">
-<h2><?php echo __('Inventory'); ?></h2>
+<div class="inventories view" id="page-wrapper">
+<div class="addNewButton" style="float:none;">
+	 <?php echo $this->Html->link(__('Back to Inventory'), array('action' => 'index'),array('class' => 'btn btn-primary','type'=>'button')); ?>
+     <?php echo $this->Html->link(__('Add Inventory'), array('action' => 'add'),array('class' => 'btn btn-primary','type'=>'button')); ?>
+</div>
+<div class="row">
+        <div class="col-lg-12">
+            <fieldset><legend><?php echo __('Inventory'); ?></legend>
 	<dl>
 		<dt><?php echo __('Id'); ?></dt>
 		<dd>
@@ -52,28 +58,23 @@
 			&nbsp;
 		</dd>
 	</dl>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('Edit Inventory'), array('action' => 'edit', $inventory['Inventory']['id'])); ?> </li>
-		<li><?php echo $this->Form->postLink(__('Delete Inventory'), array('action' => 'delete', $inventory['Inventory']['id']), array('confirm' => __('Are you sure you want to delete # %s?', $inventory['Inventory']['id']))); ?> </li>
-		<li><?php echo $this->Html->link(__('List Inventories'), array('action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Inventory'), array('action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New User'), array('controller' => 'users', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Products'), array('controller' => 'products', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Product'), array('controller' => 'products', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Varies'), array('controller' => 'varies', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Vary'), array('controller' => 'varies', 'action' => 'add')); ?> </li>
-	</ul>
-</div>
-<div class="related">
-	<h3><?php echo __('Related Varies'); ?></h3>
+    </fieldset>
+    </div>
+
+    <br /> <br />
+
+<div class="col-lg-12">
+     
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php echo __('Related Varies'); ?>
+        </div>
 	<?php if (!empty($inventory['Vary'])): ?>
-	<table cellpadding = "0" cellspacing = "0">
+    <div class="panel-body">
+     	   <div class="dataTable_wrapper">
+	 <table cellpadding="0" cellspacing="0" class="table table-striped table-bordered gtable table-hover" id="dataTables-example" style="margin-top:15px;">
 	<tr>
-		<th><?php echo __('Id'); ?></th>
+		<?php /*?><!--<th><?php echo __('Id'); ?></th>--><?php */?>
 		<th><?php echo __('User Id'); ?></th>
 		<th><?php echo __('Inventory Id'); ?></th>
 		<th><?php echo __('Product Id'); ?></th>
@@ -89,7 +90,7 @@
 	</tr>
 	<?php foreach ($inventory['Vary'] as $vary): ?>
 		<tr>
-			<td><?php echo $vary['id']; ?></td>
+			<?php /*?><td><?php echo $vary['id']; ?></td><?php */?>
 			<td><?php echo $vary['user_id']; ?></td>
 			<td><?php echo $vary['inventory_id']; ?></td>
 			<td><?php echo $vary['product_id']; ?></td>
@@ -109,11 +110,11 @@
 		</tr>
 	<?php endforeach; ?>
 	</table>
+     </div>
+       		</div>
+		
+	   
 <?php endif; ?>
-
-	<div class="actions">
-		<ul>
-			<li><?php echo $this->Html->link(__('New Vary'), array('controller' => 'varies', 'action' => 'add')); ?> </li>
-		</ul>
-	</div>
+</div> </div>
+</div>	
 </div>
