@@ -55,13 +55,12 @@ tr {
         
          <td><?php echo  date('m-d-Y', strtotime($inventory['Inventory']['created']));?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('action' => 'view', $inventory['Inventory']['id'])); ?>
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $inventory['Inventory']['id'], $inventory['Inventory']['type'])); ?>
 		</td>
         
 	</tr>
 <?php endforeach; ?>
-		<tr><td><b>Total: </b></td><td><?php echo $total_Quantity;?>&nbsp;</td> <td><?php echo '$'.$total_purchase_price;?>&nbsp;</td> <td><?php echo '$'.$total_sale_price;?>&nbsp;</td><td colspan="2">&nbsp;</td></tr>
+		<tr><td><b>Total: </b></td><td><?php echo $total_Quantity;?>&nbsp;</td> <td><?php echo '$'.$total_purchase_price;?>&nbsp;</td> <td><?php echo '$'.$total_sale_price;?>&nbsp;</td><td colspan="3">&nbsp;</td></tr>
 	</tbody>
 	</table>
     
