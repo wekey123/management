@@ -48,12 +48,9 @@ tr {
 	<thead>
 	<tr>
 			<th><?php echo h('Title'); ?></th>
-            <th><?php echo h('No.of Order'); ?></th>
-			<th><?php echo h('Order Price'); ?></th>
-		    <th><?php echo h('No.of Sales'); ?></th>
-			<th><?php echo h('Sales Price'); ?></th>
-            <th><?php echo h('Product Left'); ?></th>
-            <th><?php echo h('Amount Profit'); ?></th>
+            <th colspan="2"><table width="100%" cellpadding="0" cellspacing="0"><tr><th colspan="2" style="text-align:center">Order Details</th></tr><tr><th><?php echo h('Quantity'); ?></th><th><?php echo h('Price'); ?></th></tr></table></th>
+            <th colspan="2"><table width="100%" cellpadding="0" cellspacing="0"><tr><th colspan="2" style="text-align:center">Sales Details</th></tr><tr><th><?php echo h('Quantity'); ?></th><th><?php echo h('Price'); ?></th></tr></table></th>
+            <th colspan="2"><table width="100%" cellpadding="0" cellspacing="0"><tr><th colspan="2" style="text-align:center">Stock Details</th></tr><tr><th><?php echo h('Product Left'); ?></th><th><?php echo h('Amount Profit'); ?></th></tr></table></th>
 			<th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
 	</thead>
@@ -68,22 +65,22 @@ tr {
 <li><?php //echo $this->Html->link(__('Delete'), array('action' => 'delete', $product['Product']['id']),array('class'=>'confirdel')); ?></li>
 </ul></td>
         
-		<td width="6%"><?php $orderQty = (!empty($product['Product']['order_qty'])) ? $product['Product']['order_qty'] : 0; ?><?php echo $this->Html->link(__($orderQty), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,'data-myVal'=>'orderInfo','class'=>'callModal')); ?>&nbsp;</td>
+		<td width="10%"><?php $orderQty = (!empty($product['Product']['order_qty'])) ? $product['Product']['order_qty'] : 0; ?><?php echo $this->Html->link(__($orderQty), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,'data-myVal'=>'orderInfo','class'=>'callModal')); ?>&nbsp;</td>
         <input type="hidden" name="orderInfo" class="orderInfo"  value="<?php echo htmlentities(json_encode($product['order'])); ?>"  />
-		<td width="6%"><?php echo (!empty($product['Product']['order_purchase_price'])) ? '$'.$product['Product']['order_purchase_price'] : 0; ?>&nbsp;</td>
+		<td width="10%"><?php echo (!empty($product['Product']['order_purchase_price'])) ? '$'.$product['Product']['order_purchase_price'] : 0; ?>&nbsp;</td>
         
-		<td width="6%"><?php $salesQty = (!empty($product['Product']['sale_qty']))? $product['Product']['sale_qty'] : 0; ?><?php echo $this->Html->link(__($salesQty), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,'data-myVal'=>'saleInfo','class'=>'callModal')); ?>&nbsp;
+		<td width="10%"><?php $salesQty = (!empty($product['Product']['sale_qty']))? $product['Product']['sale_qty'] : 0; ?><?php echo $this->Html->link(__($salesQty), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,'data-myVal'=>'saleInfo','class'=>'callModal')); ?>&nbsp;
         </td>    
         <input type="hidden" name="saleInfo" class="saleInfo"  value="<?php echo htmlentities(json_encode($product['attribute'])); ?>"  />
         
-		<td width="6%"><?php echo (!empty($product['Product']['sale_sale_price'])) ? '$'.$product['Product']['sale_sale_price'] : 0; ?>&nbsp;</td>
+		<td width="10%"><?php echo (!empty($product['Product']['sale_sale_price'])) ? '$'.$product['Product']['sale_sale_price'] : 0; ?>&nbsp;</td>
         
-        <td width="6%"><?php echo $orderQty - $salesQty;  ?>&nbsp;</td>
-		<td width="6%"><?php echo ($product['Product']['order_purchase_price'] >= $product['Product']['sale_sale_price']) ? '-$'.($product['Product']['order_purchase_price'] - $product['Product']['sale_sale_price']) : '$'.($product['Product']['sale_sale_price'] - $product['Product']['order_purchase_price']); ?>&nbsp;</td>
+        <td width="10%"><?php echo $orderQty - $salesQty;  ?>&nbsp;</td>
+		<td width="10%"><?php echo ($product['Product']['order_purchase_price'] >= $product['Product']['sale_sale_price']) ? '-$'.($product['Product']['order_purchase_price'] - $product['Product']['sale_sale_price']) : '$'.($product['Product']['sale_sale_price'] - $product['Product']['order_purchase_price']); ?>&nbsp;</td>
 
 		<td class="actions">
-        	<?php echo $this->Html->link(__('Order'), array('controller'=>'inventories','action' => 'add', $product['Product']['id'])); ?>&nbsp;|&nbsp;
-			<?php //echo $this->Html->link(__('Varients'), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,)); ?>
+        	<?php echo $this->Html->link(__('Order'), array('controller'=>'inventories','action' => 'add', $product['Product']['id'])); ?>
+			<?php //echo $this->Html->link(__('Varients'), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,));&nbsp;|&nbsp; ?>
 		</td>
         <!-- Modal -->
         

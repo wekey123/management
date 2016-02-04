@@ -79,26 +79,63 @@ class InventoriesController extends AppController {
 			$values = explode(',',$Products['Product']['values']);
 		}else{
 			$this->Vary->unbindModel(array('belongsTo' => array('User','Inventory','Product')));
-			$Products = $this->Vary->find('all',array('conditions'=>array('Vary.product_id'=>$id,'Vary.type'=>'order'),'fields'=>array('Vary.id','Vary.attribute','Vary.value')));
+			$Varytype = $type == 'sale' ? 'fulfillment' : ($type == 'fulfillment' ? 'order' : 'order');
+			$Products = $this->Vary->find('all',array('conditions'=>array('Vary.product_id'=>$id,'Vary.type'=>$Varytype),'fields'=>array('Vary.id','Vary.attribute','Vary.value')));
 			foreach($Products as $product){
 				$vary_attribute[] = $product['Vary']['attribute'];
 				$vary_value[] = $product['Vary']['value'];
 			}
+			$ProductsQty = $this->Vary->find('all',array('conditions'=>array('Vary.product_id'=>$id),'fields'=>array('Vary.id','Vary.attribute','Vary.value','Vary.quantity','Vary.type')));
+			
+			$this->Product->unbindModel(array('hasMany' => array('Vary')));
+			$ProductsAll = $this->Product->find('first',array('conditions'=>array('Product.id'=>$id),'fields'=>array('Product.id','Product.attributes','Product.values')));
+			$total='';
+			foreach($ProductsAll['Inventory'] as $productAll){
+				 if($type == 'fulfillment'){
+					 if($productAll['type'] == 'order'){
+						 $total['miscellaneous'] +=$productAll['shipping_price'] + $productAll['miscellaneous'];
+						 $total['purchase_price'] +=$productAll['purchase_price'];
+					 }
+				 }
+			}
+			foreach($ProductsQty as $product){
+				
+				 if($type == 'fulfillment'){
+					 if($product['Vary']['type']=='order')
+						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']] += $product['Vary']['quantity'];
+					 if($product['Vary']['type']=='fulfillment')
+						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']] -= $product['Vary']['quantity'];
+				 }
+				 
+				 if($type == 'sale'){
+					if($product['Vary']['type']=='fulfillment')
+						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']] += $product['Vary']['quantity'];
+					 if($product['Vary']['type']=='sale')
+						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']] -= $product['Vary']['quantity'];
+				 }
+				
+			}
 			$attributes = array_unique($vary_attribute);
 			$values = array_unique($vary_value);
 		}
-		
-		$fields = array('quantity','purchase_price','sale_price');
+		if($type == 'sale' || $type == 'fulfillment')
+		$fields = array('quantity','sale_price');
+		else
+		$fields = array('quantity','purchase_price');
 		$count = count($values);
 		foreach($attributes as $key1 => $attr){
 			for($i = 1; $i <= $count; $i++){
 				foreach($values as $key1 => $value){
 				 $loop[$attr][$value] = $fields;
+				 if($type != 'order')
+				 $loop[$attr][$value][$i] = $vary_count[$attr][$value];
 				}
 			}
 		}
 		//debug($loop); exit;
 		$this->set('loops',$loop);
+		$this->set('types',$type);
+		$this->set('total',$total);
 	}
 	
 	
@@ -225,7 +262,10 @@ class InventoriesController extends AppController {
 				$inventory = $this->Inventory->find('first', $options);
 				$attributes = explode(',',$inventory['Product']['attributes']);
 				$values = explode(',',$inventory['Product']['values']);
-				$fields = array('quantity','purchase_price','sale_price');
+				if($type == 'sale' || $type == 'fulfillment')
+				$fields = array('quantity','sale_price');
+				else
+				$fields = array('quantity','purchase_price');
 				$count = count($values);
 				foreach($attributes as $key1 => $attr){
 					for($i = 1; $i <= $count; $i++){
