@@ -14,4 +14,8 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 ?>
+<?php 
+	echo $this->Html->script('jquery.min');
+	echo $this->Html->script('jquery-ui.min');
+?>
 <?php echo $this->fetch('content'); ?>

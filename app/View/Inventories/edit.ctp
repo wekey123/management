@@ -50,16 +50,16 @@
                                     <div class="panel-body"> 
                                   <?php foreach($value as $key3 => $fields){ ?>
                                         <?php 
-                                        if($fields == 'quantity')
+                                        if($key3 == 'quantity')
                                             $placeholder = 'Qty';
-                                        if($fields == 'purchase_price')
+                                        if($key3 == 'purchase_price')
                                             $placeholder = 'Purchase Price';
-                                        if($fields == 'sale_price')
+                                        if($key3 == 'sale_price')
                                             $placeholder = 'Sale Price';
                                         if(!empty($this->request->data[$key1][$key2]['id'])){	
                                          echo $this->Form->input($key1.'.'.$key2.'.id',array('div'=>false,'error'=>false,'type'=>'hidden'));
                                         }
-                                        echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false, 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control invent_'.$fields,'placeholder'=>$placeholder,'id'=>'pTitle','required'=>false,'label'=>$placeholder)); 
+                                        echo $this->Form->input($key1.'.'.$key2.'.'.$key3 ,array('div'=>false,'error'=>false, 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control invent_'.$key3,'placeholder'=>$placeholder,'id'=>$key1.'_'.$key2.'_'.$key3,'required'=>false,'label'=>$placeholder)); 
                                         ?>
                                   <?php } ?>
                                      </div>

@@ -28,9 +28,15 @@ class InventoriesController extends AppController {
 		if ($this->request->is('post')) {
 			$loops = $this->request->data;
 			$inventory['Inventory'] = $this->request->data['Inventory'];
-			$this->Inventory->create();
-			$this->Inventory->save($inventory);
-			$inventory['Inventory']['inventory_id'] = $this->Inventory->getInsertID();
+			debug($inventory['Inventory']);
+			if($inventory['Inventory']['quantity'] != "" && $inventory['Inventory']['quantity'] > 0 ){
+				$this->Inventory->create();
+				$this->Inventory->save($inventory);
+				$inventory['Inventory']['inventory_id'] = $this->Inventory->getInsertID();
+			}else{
+				$this->Flash->error(__('Inventory quantity and their value should be filled up'));
+				$this->redirect(array('controller'=>'inventories','action'=>'index',$id));	
+			}
 			foreach($loops as $key1=> $loop){
 				foreach($loop as $key2=> $value){
 					foreach($value as $key3=> $fields){
@@ -43,19 +49,21 @@ class InventoriesController extends AppController {
 						$data['Vary']['type'] = $inventory['Inventory']['type'];
 						$keyarry[] = $key3;
 					}
-				    if(!empty($data['Vary'][$keyarry[0]]) && !empty($data['Vary'][$keyarry[1]]) && !empty($data['Vary'][$keyarry[2]])){
+				    if(!empty($data['Vary'][$keyarry[0]]) && (!empty($data['Vary'][$keyarry[1]]) || !empty($data['Vary'][$keyarry[2]])) ){
 						$this->Vary->create();
 						$this->Vary->save($data);
 					}
 				}
 			}
-			$this->redirect(array('controller'=>'products','action'=>'index'));
+			$this->Flash->success(__('Inventory '.$id.' successfully added.'));
+			$this->redirect(array('controller'=>'inventories','action'=>'index',$id));	
 		}else{
 			$readSession = $this->Session->read();
 			$this->Product->unbindModel(array('hasMany' => array('Inventory','Vary')));
 			$select1=array(0=>'Select a Product');
    			$select2=$this->Product->find('list',array('fields'=>array('Product.title')));
   			$this->set('products',array_merge($select1, $select2)); //exit;
+			$this->set('types',$id);
 			if(is_numeric($id)){
 				$this->request->data['Inventory']['product_id'] = $id;
 				$this->set('product_selected','disabled');
@@ -71,34 +79,53 @@ class InventoriesController extends AppController {
 	}
 	
 	public function getform($id = null,$type = null){
-		$this->layout = '';
+		$this->layout = 'ajax';
+		$this->Product->unbindModel(array('hasMany' => array('Inventory','Vary')));
+		$Products = $this->Product->find('first',array('conditions'=>array('Product.id'=>$id),'fields'=>array('Product.id','Product.attributes','Product.values')));
+		$attributes = explode(',',$Products['Product']['attributes']);
+		$values = explode(',',$Products['Product']['values']);	
 		if($type == 'order'){
-			$this->Product->unbindModel(array('hasMany' => array('Inventory','Vary')));
-			$Products = $this->Product->find('first',array('conditions'=>array('Product.id'=>$id),'fields'=>array('Product.id','Product.attributes','Product.values')));
-			$attributes = explode(',',$Products['Product']['attributes']);
-			$values = explode(',',$Products['Product']['values']);
-		}else{
-			$this->Vary->unbindModel(array('belongsTo' => array('User','Inventory','Product')));
-			$Products = $this->Vary->find('all',array('conditions'=>array('Vary.product_id'=>$id,'Vary.type'=>'order'),'fields'=>array('Vary.id','Vary.attribute','Vary.value')));
-			foreach($Products as $product){
-				$vary_attribute[] = $product['Vary']['attribute'];
-				$vary_value[] = $product['Vary']['value'];
-			}
-			$attributes = array_unique($vary_attribute);
-			$values = array_unique($vary_value);
-		}
-		
-		$fields = array('quantity','purchase_price','sale_price');
-		$count = count($values);
-		foreach($attributes as $key1 => $attr){
-			for($i = 1; $i <= $count; $i++){
-				foreach($values as $key1 => $value){
-				 $loop[$attr][$value] = $fields;
+			$fields = array('quantity'=>'','purchase_price'=>'','sale_price'=>'');
+			$count = count($values);
+			foreach($attributes as $key1 => $attr){
+				for($i = 1; $i <= $count; $i++){
+					foreach($values as $key1 => $value){
+					 $loop[$attr][$value] = $fields;
+					}
 				}
 			}
+		}else{
+			$this->Vary->unbindModel(array('belongsTo' => array('User','Inventory','Product')));
+			$Products = $this->Vary->find('all',array('conditions'=>array('Vary.product_id'=>$id),'fields'=>array('Vary.id','Vary.attribute','Vary.type','Vary.value','Vary.quantity','Vary.purchase_price'))); //debug($Products);  
+			$fields = array('quantity','purchase_price','sale_price');
+			foreach($Products as $product){
+				 $loop[$product['Vary']['attribute']][$product['Vary']['value']]['quantity'] = '';
+				 $loop[$product['Vary']['attribute']][$product['Vary']['value']]['sale_price'] = '';
+				if($product['Vary']['type'] == 'order'){
+				 $loop[$product['Vary']['attribute']][$product['Vary']['value']]['purchase_price'] = $product['Vary']['purchase_price'];
+				 $loop[$product['Vary']['attribute']][$product['Vary']['value']]['order_quantity'] += $product['Vary']['quantity'];
+				 $loop[$product['Vary']['attribute']][$product['Vary']['value']]['fulfillment_quantity'] += 0.00;	
+				 $loop[$product['Vary']['attribute']][$product['Vary']['value']]['sale_quantity'] += 0.00;
+				}
+				
+				if($product['Vary']['type'] == 'fulfillment'){
+				 $loop[$product['Vary']['attribute']][$product['Vary']['value']]['fulfillment_quantity'] += $product['Vary']['quantity'];
+				}
+				
+				if($product['Vary']['type'] == 'sale'){
+				 $loop[$product['Vary']['attribute']][$product['Vary']['value']]['sale_quantity'] += $product['Vary']['quantity'];
+				}
+
+			}
+			//array_multisort($loop, SORT_DESC);
+			debug($loop);// exit;
+		 }
+		if(!empty($loop)){
+			$this->set('loops',$loop);
+		}else{
+			$this->set('loops',array());
 		}
-		//debug($loop); exit;
-		$this->set('loops',$loop);
+		$this->set('types',$type);
 	}
 	
 	
@@ -113,6 +140,7 @@ class InventoriesController extends AppController {
 		//debug($Inventory); //exit;
 		
 		$this->set('inventories',$Inventory);
+		$this->set('types',$type);
 	}
 
 /**
@@ -179,7 +207,7 @@ class InventoriesController extends AppController {
 	
 	public function edit($id = null,$type = null) {
 		
-		if ($this->request->is(array('post', 'put'))) {
+		if($this->request->is(array('post', 'put'))) {
 			$loops = $this->request->data;
 			$inventory['Inventory'] = $this->request->data['Inventory'];
 			$this->Inventory->save($inventory);
@@ -213,7 +241,7 @@ class InventoriesController extends AppController {
 				}
 			}
 			$this->redirect(array('controller'=>'inventories','action'=>'index',$type));
-		}else{	//echo 'mm'; exit;
+		}else{
 			$readSession = $this->Session->read();
 			$this->Product->unbindModel(array('hasMany' => array('Inventory','Vary')));
 			$this->set('products',$this->Product->find('list',array('fields'=>array('Product.title'))));
@@ -225,7 +253,7 @@ class InventoriesController extends AppController {
 				$inventory = $this->Inventory->find('first', $options);
 				$attributes = explode(',',$inventory['Product']['attributes']);
 				$values = explode(',',$inventory['Product']['values']);
-				$fields = array('quantity','purchase_price','sale_price');
+				$fields = array('quantity'=>'','purchase_price'=>'','sale_price'=>'');
 				$count = count($values);
 				foreach($attributes as $key1 => $attr){
 					for($i = 1; $i <= $count; $i++){
@@ -235,12 +263,27 @@ class InventoriesController extends AppController {
 					}
 				}
 				$this->set('loops',$loop);
-				
-				foreach($inventory['Vary'] as  $data){
-					$update_loop[$data['attribute']][$data['value']] = array('id'=>$data['id'],'quantity'=> $data['quantity'],'purchase_price'=>$data['purchase_price'],'sale_price'=>$data['sale_price']);
+				debug($inventory);
+				foreach($inventory['Vary'] as $product){
+				 $update_loop[$product['attribute']][$product['value']]['id'] = $product['id'];
+				 $update_loop[$product['attribute']][$product['value']]['quantity'] = $product['quantity'];
+				 $update_loop[$product['attribute']][$product['value']]['sale_price'] = $product['sale_price'];
+				if($product['type'] == 'order'){
+				 $update_loop[$product['attribute']][$product['value']]['purchase_price'] = $product['purchase_price'];
+				 $update_loop[$product['attribute']][$product['value']]['order_quantity'] = $product['quantity'];
 				}
+				
+				if($product['type'] == 'fulfillment'){
+				 $update_loop[$product['attribute']][$product['value']]['fulfillment_quantity'] = $product['quantity'];
+				}
+				
+				if($product['type'] == 'sale'){
+				 $update_loop[$product['attribute']][$product['value']]['sale_quantity'] = $product['quantity'];
+				}
+
+			}
 				$this->request->data = array_merge($update_loop,$inventory);
-debug($this->request->data);
+//debug($this->request->data);
 			}
 			$datas['user_id'] = $readSession['User']['id'];
 			$this->set('data',$datas);

@@ -18,7 +18,12 @@
 			if($type_selected == 'disabled'){
 				echo $this->Form->input('type',array('div'=>false,'error'=>false,'type'=>'hidden'));
 			}
-			
+			if($types == 'order'){
+				$placeholder = 'Inbound shipping cost';
+			}else{
+				$placeholder = 'Outbound shipping cost';
+			}
+		echo $this->Form->input('shipping',array('div'=>false,'error'=>false, 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control','placeholder'=>$placeholder,'id'=>'shipping','required'=>false,'label'=>$placeholder)); 
 		echo $this->Form->input('quantity',array('div'=>false,'error'=>false,'type'=>'hidden', 'id'=>'myQuan'));
 		echo $this->Form->input('purchase_price',array('div'=>false,'error'=>false,'type'=>'hidden', 'id'=>'mypurchasePrice'));
 		echo $this->Form->input('sale_price',array('div'=>false,'error'=>false,'type'=>'hidden', 'id'=>'mysalePrice'));
@@ -59,6 +64,7 @@ $('#getVarientValue').click(function() {
 	
 		$('.invent_quantity').each(function() {
 			myQuan += (isNaN(parseInt($( this ).val()))) ? 0 : parseInt($( this ).val());
+			alert(myQuan);
 		});
 		$('#tab div.col-lg-4').each(function() {
 			mypurchasePrice += (isNaN(parseFloat($( this ).find('input.invent_purchase_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_purchase_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
