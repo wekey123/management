@@ -36,7 +36,7 @@ $i=1;foreach($loops as $key1 => $loop){ ?>
                 <div class="panel-heading"><?php echo strtoupper($key1);?></div>              
                 <div class="panel-body"> 
 				<?php foreach($loop as $key2 => $value){ 
-				if($types == 'order' || $types == 'sales' || ($types == 'fulfillment' && $value[3] != '')){ ?>
+				if($types == 'order' || ($types == 'sale' && $value[3] != '') || ($types == 'fulfillment' && $value[3] != '')){ ?>
                   <div class="col-lg-4">
                         <div class="panel panel-default">
                             <div class="panel-heading"><?php echo strtoupper($key2);?></div>              
