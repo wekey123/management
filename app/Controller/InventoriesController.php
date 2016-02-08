@@ -43,7 +43,7 @@ class InventoriesController extends AppController {
 						$data['Vary']['type'] = $inventory['Inventory']['type'];
 						$keyarry[] = $key3;
 					}
-				    if(!empty($data['Vary'][$keyarry[0]]) && !empty($data['Vary'][$keyarry[1]]) && !empty($data['Vary'][$keyarry[2]])){
+				    if(!empty($data['Vary'][$keyarry[0]]) && (!empty($data['Vary'][$keyarry[1]]) || !empty($data['Vary'][$keyarry[2]]))){
 						$this->Vary->create();
 						$this->Vary->save($data);
 					}
@@ -239,7 +239,7 @@ class InventoriesController extends AppController {
 					if($keyarry[0] == 'id'){
 						$this->Vary->save($data);
 					}else{
-				    	if(!empty($data['Vary'][$keyarry[0]]) && !empty($data['Vary'][$keyarry[1]]) && !empty($data['Vary'][$keyarry[2]])){
+				    	if(!empty($data['Vary'][$keyarry[0]]) && (!empty($data['Vary'][$keyarry[1]]) || !empty($data['Vary'][$keyarry[2]]))){
 							unset($data['Vary']['id']);
 							$this->Vary->create();
 							$this->Vary->save($data);

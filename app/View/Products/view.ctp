@@ -69,6 +69,7 @@
        <div class="col-lg-6">
             <fieldset><legend><?php echo __('Total Products Ordered'); ?></legend>
                 <?php foreach ($product['order'] as $key => $salesVary):
+				$total_sale_price = 0;
 			  			echo '<div class="panel-heading">'.$key.'</div>';?>
 						<div class="panel-body">
                             <div class="rTable">
@@ -96,7 +97,7 @@
     </div> 
        <div class="col-lg-6">
             <fieldset><legend><?php echo __('Total Products Sold'); ?></legend>
-                <?php foreach ($product['attribute'] as $key => $salesVary):
+                <?php foreach ($product['attribute'] as $key => $salesVary):$total_sale_price = 0;
 			  			echo '<div class="panel-heading">'.$key.'</div>';?>
 						<div class="panel-body">
                             <div class="rTable">

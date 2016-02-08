@@ -48,9 +48,9 @@ tr {
 	<thead>
 	<tr>
 			<th><?php echo h('Title'); ?></th>
-            <th colspan="2"><table width="100%" cellpadding="0" cellspacing="0"><tr><th colspan="2" style="text-align:center">Order Details</th></tr><tr><th><?php echo h('Quantity'); ?></th><th><?php echo h('Price'); ?></th></tr></table></th>
-            <th colspan="2"><table width="100%" cellpadding="0" cellspacing="0"><tr><th colspan="2" style="text-align:center">Sales Details</th></tr><tr><th><?php echo h('Quantity'); ?></th><th><?php echo h('Price'); ?></th></tr></table></th>
-            <th colspan="2"><table width="100%" cellpadding="0" cellspacing="0"><tr><th colspan="2" style="text-align:center">Stock Details</th></tr><tr><th><?php echo h('Product Left'); ?></th><th><?php echo h('Amount Profit'); ?></th></tr></table></th>
+            <th colspan="2"><table width="100%" cellpadding="0" cellspacing="0"><tr><th colspan="2" style="text-align:center; padding-bottom:15px;">Order Details</th></tr><tr><th width="50%"><?php echo h('Quantity'); ?></th><th width="50%"><?php echo h('Price'); ?></th></tr></table></th>
+            <th colspan="2"><table width="100%" cellpadding="0" cellspacing="0"><tr><th colspan="2" style="text-align:center; padding-bottom:15px;">Sales Details</th></tr><tr><th width="50%"><?php echo h('Quantity'); ?></th><th width="50%"><?php echo h('Price'); ?></th></tr></table></th>
+            <th colspan="2"><table width="100%" cellpadding="0" cellspacing="0"><tr><th colspan="2" style="text-align:center; padding-bottom:15px;">Stock Details</th></tr><tr><th width="50%"><?php echo h('Product Left'); ?></th><th width="50%"><?php echo h('Amount Profit'); ?></th></tr></table></th>
 			<th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
 	</thead>
@@ -65,13 +65,13 @@ tr {
 <li><?php //echo $this->Html->link(__('Delete'), array('action' => 'delete', $product['Product']['id']),array('class'=>'confirdel')); ?></li>
 </ul></td>
         
-		<td width="10%"><?php $orderQty = (!empty($product['Product']['order_qty'])) ? $product['Product']['order_qty'] : 0; ?><?php echo $this->Html->link(__($orderQty), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,'data-myVal'=>'orderInfo','class'=>'callModal')); ?>&nbsp;</td>
-        <input type="hidden" name="orderInfo" class="orderInfo"  value="<?php echo htmlentities(json_encode($product['order'])); ?>"  />
+		<td width="10%"><?php $orderQty = (!empty($product['Product']['order_qty'])) ? $product['Product']['order_qty'] : 0; ?><?php echo $this->Html->link(__($orderQty), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,'data-myVal'=>'orderInfo'.$i,'class'=>'callModal')); ?>&nbsp;</td>
+        <input type="hidden" name="orderInfo" id="orderInfo<?php echo $i ;?>"  value="<?php echo htmlentities(json_encode($product['order'])); ?>"  />
 		<td width="10%"><?php echo (!empty($product['Product']['order_purchase_price'])) ? '$'.$product['Product']['order_purchase_price'] : 0; ?>&nbsp;</td>
         
-		<td width="10%"><?php $salesQty = (!empty($product['Product']['sale_qty']))? $product['Product']['sale_qty'] : 0; ?><?php echo $this->Html->link(__($salesQty), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,'data-myVal'=>'saleInfo','class'=>'callModal')); ?>&nbsp;
+		<td width="10%"><?php $salesQty = (!empty($product['Product']['sale_qty']))? $product['Product']['sale_qty'] : 0; ?><?php echo $this->Html->link(__($salesQty), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,'data-myVal'=>'saleInfo'.$i,'class'=>'callModal')); ?>&nbsp;
         </td>    
-        <input type="hidden" name="saleInfo" class="saleInfo"  value="<?php echo htmlentities(json_encode($product['attribute'])); ?>"  />
+        <input type="hidden" name="saleInfo" id="saleInfo<?php echo $i ;?>"  value="<?php echo htmlentities(json_encode($product['attribute'])); ?>"  />
         
 		<td width="10%"><?php echo (!empty($product['Product']['sale_sale_price'])) ? '$'.$product['Product']['sale_sale_price'] : 0; ?>&nbsp;</td>
         
@@ -122,18 +122,21 @@ tr {
 
 <script>
 $('.callModal').click(function() {
-	var total_sale_price,total_sale_price_all,HtmlVal='';
+	var total_sale_price,HtmlVal='';
+	var total_sale_price_all = 0;
+	var total_sale_price_obj = {};
 	var valName = $(this).data('myval');
 	var target = $(this).data('target');
-	var obj = JSON.parse($('.'+valName).val());
+	var obj = JSON.parse($('#'+valName).val());
 	$(''+target).find('div#callBackModel').html("");
 	var newTextBoxDiv = $(''+target).find('div#callBackModel');
+	console.log(obj);
 	$.each( obj, function( key, value ) {
-	  HtmlVal += "<div class='panel-heading'>" + key + "</div><div class='panel-body'><div class='rTable'><div class='rTableRow'><div class='rTableHead'><strong>Varient size</strong></div><div class='rTableHead'><span style='font-weight: bold;'>Quantity X Sold Price</span></div><div class='rTableHead'>Total Sold Price</div></div>";
+		total_sale_price_all = 0;
+	  HtmlVal += "<div class='panel-heading'>" + key + "</div><div class='panel-body'><div class='rTable'><div class='rTableRow'><div class='rTableHead'><strong>Varient size</strong></div><div class='rTableHead'><span style='font-weight: bold;'>Quantity X Price</span></div><div class='rTableHead'>Total Cost</div></div>";
 	  	$.each( value, function( key1, value1 ) {
-			HtmlVal += "<div class='rTableRow'><div class='rTableCell'>"+key1+"</div><div class='rTableCell'>"+value1.quantity+"</div><div class='rTableCell'>"+value1.total_sale_price+"</div></div>";
-		total_sale_price_all +=	parseInt(value1.total_sale_price);
-		//console.log(value1.total_sale_price);
+			HtmlVal += "<div class='rTableRow'><div class='rTableCell'>"+key1+"</div><div class='rTableCell'>"+value1.quantity+" X "+value1.price+"</div><div class='rTableCell'>"+value1.total_price+"</div></div>";
+		total_sale_price_all += (isNaN(parseInt(value1.total_price))) ? 0 : parseInt(value1.total_price);
 		});
 		HtmlVal += "<div class='rTableRow'><div class='rTableCell'></div><div class='rTableCell'>Total Sold Price</div><div class='rTableCell'>"+total_sale_price_all+"</div></div></div></div>";
 	});

@@ -1,5 +1,17 @@
-<?php if($types!='sale') {echo $this->Form->input('shipping_price',array('div'=>false,'error'=>false,'before' => '<div class="form-group">', 'after' => '</div>' , 'class'=>'validate[required] form-control'));
-		echo $this->Form->input('miscellaneous',array('div'=>false,'error'=>false,'before' => '<div class="form-group">', 'after' => '</div>' , 'class'=>'validate[required] form-control')); }
+<style>
+.form-group label {
+     width: 98%; 
+    margin-left: 15px;
+}
+.error_msg{
+	font-size:12px;
+	color:red;
+	padding-left:10px;
+}
+
+</style>
+<?php if($types!='sale') {echo $this->Form->input('Inventory.shipping_price',array('div'=>false,'error'=>false,'before' => '<div class="form-group">', 'after' => '</div>' , 'class'=>'validate[required] form-control'));
+		echo $this->Form->input('Inventory.miscellaneous',array('div'=>false,'error'=>false,'before' => '<div class="form-group">', 'after' => '</div>' , 'class'=>'validate[required] form-control')); }
 		if($types == 'fulfillment'){
 			echo '<br /><b>Total Purchase Price </b>: '.$total['purchase_price'].'<br /><br />';
 			echo '<b>Shipping and miscellaneous Price </b>: '.$total['miscellaneous'].'<br /><br />';
@@ -16,19 +28,21 @@ $i=1;foreach($loops as $Titlekey => $loopTitle){?>
     </li>   
 <?php $i++;} ?>
 </ul>
-<?php //echo $miscellaneous;//echo '<pre>';print_r($loops);
+<?php //echo '<pre>';print_r($loops);
 $i=1;foreach($loops as $key1 => $loop){ ?> 
 		
 		  <div class="col-lg-12" id="tabs-<?php echo $i ?>">
             <div class="panel panel-default">
                 <div class="panel-heading"><?php echo strtoupper($key1);?></div>              
                 <div class="panel-body"> 
-				<?php foreach($loop as $key2 => $value){  ?>
+				<?php foreach($loop as $key2 => $value){ 
+				if($types == 'order' || $types == 'sales' || ($types == 'fulfillment' && $value[3] != '')){ ?>
                   <div class="col-lg-4">
                         <div class="panel panel-default">
                             <div class="panel-heading"><?php echo strtoupper($key2);?></div>              
                             <div class="panel-body"> 
-                          <?php $j=1;foreach($value as $key3 => $fields){ ?>
+                          <?php $j=1;
+						  foreach($value as $key3 => $fields){ ?>
                                 <?php 
                                 if($fields == 'quantity')
                                     $placeholder = 'Qty';
@@ -47,7 +61,7 @@ $i=1;foreach($loops as $key1 => $loop){ ?>
                              </div>
                              </div>
                   </div>
-                <?php } ?>
+                <?php } } ?>
             	</div>
              </div>
            </div>
@@ -55,12 +69,13 @@ $i=1;foreach($loops as $key1 => $loop){ ?>
 </div>
 <script>
 $(".invent_quantity").change(function() {
+	$('.error_msg').remove();
 	var qcount = $('#'+$(this).data('rel')).val();
 	if($(this).val() > qcount){
-		$(this).prev().append('<span>Please Enter less then quantity</span>');
+		$(this).prev().append('<span class="error_msg">Please Enter less then quantity</span>');
 		$('input[type="submit"]').prop('disabled', true);
 	}
-	else {
+	else {$('.error_msg').remove();
 		var set = false;
 		$('.invent_quantity').each(function() {
 			var qcount = $('#'+$(this).data('rel')).val();

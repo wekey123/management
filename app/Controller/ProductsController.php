@@ -63,13 +63,13 @@ class ProductsController extends AppController {
 			foreach($product['Vary'] as $vary){
 				if($vary['type']=='sale'){
 					$product['attribute'][$vary['attribute']][$vary['value']]['quantity'] +=$vary['quantity'];
-					$product['attribute'][$vary['attribute']][$vary['value']]['sale_price'] +=$vary['sale_price'];
-					$product['attribute'][$vary['attribute']][$vary['value']]['total_sale_price'] +=$vary['quantity']*$vary['sale_price'];
+					$product['attribute'][$vary['attribute']][$vary['value']]['price'] +=$vary['sale_price'];
+					$product['attribute'][$vary['attribute']][$vary['value']]['total_price'] +=$vary['quantity']*$vary['sale_price'];
 				}
 				if($vary['type']=='order'){
 					$product['order'][$vary['attribute']][$vary['value']]['quantity'] +=$vary['quantity'];
-					$product['order'][$vary['attribute']][$vary['value']]['sale_price'] +=$vary['sale_price'];
-					$product['order'][$vary['attribute']][$vary['value']]['total_sale_price'] +=$vary['quantity']*$vary['sale_price'];
+					$product['order'][$vary['attribute']][$vary['value']]['price'] +=$vary['purchase_price'];
+					$product['order'][$vary['attribute']][$vary['value']]['total_price'] +=$vary['quantity']*$vary['purchase_price'];
 				}
 			$i++;
 			}
@@ -111,8 +111,8 @@ class ProductsController extends AppController {
 				}
 				if($vary['type']=='order'){
 					$product['order'][$vary['attribute']][$vary['value']]['quantity'] +=$vary['quantity'];
-					$product['order'][$vary['attribute']][$vary['value']]['sale_price'] +=$vary['sale_price'];
-					$product['order'][$vary['attribute']][$vary['value']]['total_sale_price'] +=$vary['quantity']*$vary['sale_price'];
+					$product['order'][$vary['attribute']][$vary['value']]['sale_price'] +=$vary['purchase_price'];
+					$product['order'][$vary['attribute']][$vary['value']]['total_sale_price'] +=$vary['quantity']*$vary['purchase_price'];
 				}
 			$i++;
 			}
