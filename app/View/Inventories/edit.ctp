@@ -7,7 +7,7 @@
             <div class="panel panel-default">
             	<div class="panel-heading">Products</div>              
                 <div class="panel-body">
-		<?php 		
+		<?php 	//echo $types. '<pre>';print_r($loops);
 			echo $this->Form->input('id',array('div'=>false,'error'=>false,'type'=>'hidden'));
 			echo $this->Form->input('user_id',array('div'=>false,'error'=>false,'type'=>'hidden','value'=>$data['user_id']));
 
@@ -43,12 +43,13 @@
                     <div class="panel panel-default">
                         <div class="panel-heading"><?php echo strtoupper($key1);?></div>              
                         <div class="panel-body"> 
-                        <?php foreach($loop as $key2 => $value){  ?>
+                        <?php foreach($loop as $key2 => $value){  
+						if($types == 'order' || ($types == 'sale' && is_numeric($value[3])) || ($types == 'fulfillment' &&  is_numeric($value[3]))){ ?>
                           <div class="col-lg-4">
                                 <div class="panel panel-default">
                                     <div class="panel-heading"><?php echo strtoupper($key2);?></div>              
                                     <div class="panel-body"> 
-                                  <?php foreach($value as $key3 => $fields){ ?>
+                                  <?php $j=1;foreach($value as $key3 => $fields){ ?>
                                         <?php 
                                         if($fields == 'quantity')
                                             $placeholder = 'Qty';
@@ -56,16 +57,19 @@
                                             $placeholder = 'Purchase Price';
                                         if($fields == 'sale_price')
                                             $placeholder = 'Sale Price';
-                                        if(!empty($this->request->data[$key1][$key2]['id'])){	
-                                         echo $this->Form->input($key1.'.'.$key2.'.id',array('div'=>false,'error'=>false,'type'=>'hidden'));
-                                        }
-                                        echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false, 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control invent_'.$fields,'placeholder'=>$placeholder,'id'=>'pTitle','required'=>false,'label'=>$placeholder)); 
+                                      
+										 if($j==3)  {echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false,'type'=>'hidden' , 'id'=>$key1.$key2.'count' , 'value'=>$fields));
+								echo '<b>Quantity Left </b>: '.$fields;
+								}
+								else 
+                                echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false, 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control invent_'.$fields,'placeholder'=>$placeholder,'data-rel'=>$key1.$key2.'count','required'=>false,'label'=>$placeholder));
+										
                                         ?>
-                                  <?php } ?>
+                                  <?php $j++; } ?>
                                      </div>
                                      </div>
                           </div>
-                        <?php } ?>
+                        <?php }} ?>
                         </div>
                      </div>
                    </div>

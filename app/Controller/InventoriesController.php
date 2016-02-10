@@ -146,9 +146,8 @@ class InventoriesController extends AppController {
 		$this->set('records',$days);
 		$end = date('Y-m-d', strtotime('-'.$days.' day'));
 		//$this->Inventory->virtualFields = array('total_quantity' => 'sum(Inventory.quantity)','total_purchase_price' => 'sum(Inventory.purchase_price)','total_sale_price' => 'sum(Inventory.sale_price)');
+		//$Inventory = $this->Inventory->find('all',array('conditions'=>array('Inventory.type'=>$type,array('Inventory.created >=' => $end)),'order'=>array('Inventory.created' => 'desc'),'group' => array('Inventory.product_id')));
 		$Inventory = $this->Inventory->find('all',array('conditions'=>array('Inventory.type'=>$type,array('Inventory.created >=' => $end)),'order'=>array('Inventory.created' => 'desc')));
-		//debug($Inventory); //exit;
-		
 		$this->set('inventories',$Inventory);
 	}
 
@@ -267,15 +266,37 @@ class InventoriesController extends AppController {
 				else
 				$fields = array('quantity','purchase_price');
 				$count = count($values);
-				foreach($attributes as $key1 => $attr){
+				
+				$ProductsQty = $this->Vary->find('all',array('conditions'=>array('Vary.product_id'=>$inventory['Inventory']['product_id']),'fields'=>array('Vary.id','Vary.attribute','Vary.value','Vary.quantity','Vary.type','Vary.inventory_id')));
+				$vary_attr=array();
+				foreach($ProductsQty as $product){
+					 if($type == 'fulfillment'){
+						 if($product['Vary']['type']=='order')
+							$vary_count[$product['Vary']['attribute']][$product['Vary']['value']] += $product['Vary']['quantity'];
+						 if($product['Vary']['type']=='fulfillment')
+							$vary_count[$product['Vary']['attribute']][$product['Vary']['value']] -= $product['Vary']['quantity'];
+					 }
+					 if($type == 'sale'){
+						if($product['Vary']['type']=='fulfillment')
+							$vary_count[$product['Vary']['attribute']][$product['Vary']['value']] += $product['Vary']['quantity'];
+						 if($product['Vary']['type']=='sale')
+							$vary_count[$product['Vary']['attribute']][$product['Vary']['value']] -= $product['Vary']['quantity'];
+					 }
+					 if($product['Vary']['inventory_id'] == $id)
+					 $vary_attr[]=$product['Vary']['attribute'];
+				}//echo '<pre>';print_r($vary_count);exit;
+				$attrs= $type == 'fulfillment' ? array_unique($vary_attr) : ($type == 'sale' ? array_unique($vary_attr) : $attributes);
+				foreach($attrs as $key1 => $attr){
 					for($i = 1; $i <= $count; $i++){
 						foreach($values as $key1 => $value){
-						 $loop[$attr][$value] = $fields;
-						}
+								 $loop[$attr][$value] = $fields;
+								 if($type != 'order')
+									 $loop[$attr][$value][$i] = $vary_count[$attr][$value];
+								}
 					}
 				}
 				$this->set('loops',$loop);
-				
+				$this->set('types',$type);
 				foreach($inventory['Vary'] as  $data){
 					$update_loop[$data['attribute']][$data['value']] = array('id'=>$data['id'],'quantity'=> $data['quantity'],'purchase_price'=>$data['purchase_price'],'sale_price'=>$data['sale_price']);
 				}
@@ -284,6 +305,7 @@ debug($this->request->data);
 			}
 			$datas['user_id'] = $readSession['User']['id'];
 			$this->set('data',$datas);
+			
 		}
 	}
 
