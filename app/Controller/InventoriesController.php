@@ -28,8 +28,15 @@ class InventoriesController extends AppController {
 		if ($this->request->is('post')) {
 			$loops = $this->request->data;
 			$inventory['Inventory'] = $this->request->data['Inventory'];
-			$this->Inventory->create();
-			$this->Inventory->save($inventory);
+			//debug($loops); exit;
+			if($inventory['Inventory']['quantity'] != "" && $inventory['Inventory']['quantity'] > 0 ){
+				$this->Inventory->create();
+				$this->Inventory->save($inventory);
+				$inventory['Inventory']['inventory_id'] = $this->Inventory->getInsertID();
+			}else{
+				$this->Flash->error(__('Inventory quantity and their value should be filled up'));
+				$this->redirect(array('controller'=>'inventories','action'=>'index',$id));	
+			}
 			$inventory['Inventory']['inventory_id'] = $this->Inventory->getInsertID();
 			foreach($loops as $key1=> $loop){
 				foreach($loop as $key2=> $value){
@@ -72,70 +79,65 @@ class InventoriesController extends AppController {
 	
 	public function getform($id = null,$type = null){
 		$this->layout = '';
+		$total='';
+		$this->Product->unbindModel(array('hasMany' => array('Vary')));
+		$ProductsAll = $this->Product->find('first',array('conditions'=>array('Product.id'=>$id),'fields'=>array('Product.id','Product.attributes','Product.values')));
 		if($type == 'order'){
-			$this->Product->unbindModel(array('hasMany' => array('Inventory','Vary')));
-			$Products = $this->Product->find('first',array('conditions'=>array('Product.id'=>$id),'fields'=>array('Product.id','Product.attributes','Product.values')));
-			$attributes = explode(',',$Products['Product']['attributes']);
-			$values = explode(',',$Products['Product']['values']);
-		}else{
-			$this->Vary->unbindModel(array('belongsTo' => array('User','Inventory','Product')));
-			$Varytype = $type == 'sale' ? 'fulfillment' : ($type == 'fulfillment' ? 'order' : 'order');
-			$Products = $this->Vary->find('all',array('conditions'=>array('Vary.product_id'=>$id,'Vary.type'=>$Varytype),'fields'=>array('Vary.id','Vary.attribute','Vary.value')));
-			foreach($Products as $product){
-				$vary_attribute[] = $product['Vary']['attribute'];
-				$vary_value[] = $product['Vary']['value'];
-			}
-			$ProductsQty = $this->Vary->find('all',array('conditions'=>array('Vary.product_id'=>$id),'fields'=>array('Vary.id','Vary.attribute','Vary.value','Vary.quantity','Vary.type')));
-			
-			$this->Product->unbindModel(array('hasMany' => array('Vary')));
-			$ProductsAll = $this->Product->find('first',array('conditions'=>array('Product.id'=>$id),'fields'=>array('Product.id','Product.attributes','Product.values')));
-			$total='';
-			foreach($ProductsAll['Inventory'] as $productAll){
-				 if($type == 'fulfillment'){
-					 if($productAll['type'] == 'order'){
-						 $total['miscellaneous'] +=$productAll['shipping_price'] + $productAll['miscellaneous'];
-						 $total['purchase_price'] +=$productAll['purchase_price'];
-					 }
-				 }
-			}
-			foreach($ProductsQty as $product){
-				
-				 if($type == 'fulfillment'){
-					 if($product['Vary']['type']=='order')
-						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']] += $product['Vary']['quantity'];
-					 if($product['Vary']['type']=='fulfillment')
-						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']] -= $product['Vary']['quantity'];
-				 }
-				 
-				 if($type == 'sale'){
-					if($product['Vary']['type']=='fulfillment')
-						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']] += $product['Vary']['quantity'];
-					 if($product['Vary']['type']=='sale')
-						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']] -= $product['Vary']['quantity'];
-				 }
-				
-			}
-			$attributes = array_unique($vary_attribute);
-			$values = array_unique($vary_value);
-		}
-		if($type == 'sale' || $type == 'fulfillment')
-		$fields = array('quantity','sale_price');
-		else
-		$fields = array('quantity','purchase_price');
-		$count = count($values);
-		foreach($attributes as $key1 => $attr){
-			for($i = 1; $i <= $count; $i++){
-				foreach($values as $key1 => $value){
-				 $loop[$attr][$value] = $fields;
-				 if($type != 'order')
-				 $loop[$attr][$value][$i] = $vary_count[$attr][$value];
+		  $fields = array('quantity','purchase_price');
+		  $attributes = explode(',',$ProductsAll['Product']['attributes']);
+		  $values = explode(',',$ProductsAll['Product']['values']);
+		  $count = count($values);
+		  foreach($attributes as $key1 => $attr){
+				for($i = 1; $i <= $count; $i++){
+					foreach($values as $key1 => $value){
+					 $loop[$attr][$value] = $fields;
+					}
 				}
 			}
+		}else{
+		   $Varytype = $type == 'fulfillment' ? 'order' : 'fulfillment';
+		   $this->Vary->unbindModel(array('belongsTo' => array('User','Inventory','Product')));
+		   $ProductsQty = $this->Vary->find('all',array('conditions'=>array('Vary.product_id'=>$id),'fields'=>array('Vary.id','Vary.attribute','Vary.value','Vary.quantity','Vary.type','Vary.purchase_price','Vary.sale_price')));
+		   foreach($ProductsQty as  $key => $product){
+			 	 $vary_count[$product['Vary']['attribute']][$product['Vary']['value']][0]  = 'quantity';
+				 if($type == 'order'){
+					$vary_count[$product['Vary']['attribute']][$product['Vary']['value']][1]  = 'purchase_price'; 
+				 }
+				 if($type == 'fulfillment'){
+					 if($product['Vary']['type']=='order'){
+						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']][1] = $product['Vary']['purchase_price'];
+						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']][2]  = 'sale_price'; 
+						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']][3] += $product['Vary']['quantity'];
+					 }
+					 if($product['Vary']['type']=='fulfillment'){
+						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']][3] -= $product['Vary']['quantity'];
+						if($vary_count[$product['Vary']['attribute']][$product['Vary']['value']][3] == 0){
+							unset($vary_count[$product['Vary']['attribute']][$product['Vary']['value']]);
+						}
+					 }
+				 }
+				 if($type == 'sale'){
+					 if($product['Vary']['type']=='order'){
+						 $vary_count[$product['Vary']['attribute']][$product['Vary']['value']][1] = $product['Vary']['purchase_price'];
+					 }
+					 if($product['Vary']['type']=='fulfillment'){
+						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']][2] = $product['Vary']['sale_price'];
+						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']][3] += $product['Vary']['quantity'];
+					}
+					if($product['Vary']['type']=='sale'){
+						
+						$vary_count[$product['Vary']['attribute']][$product['Vary']['value']][3] -= $product['Vary']['quantity'];
+						if($vary_count[$product['Vary']['attribute']][$product['Vary']['value']][3] == 0){
+							unset($vary_count[$product['Vary']['attribute']][$product['Vary']['value']]);
+						}
+					}
+				 }
+		  }
+		  $loop =  (!empty($vary_count)) ? $vary_count : ''; 
+		//debug( $loop); exit;
 		}
-		//debug($loop); exit;
 		$this->set('loops',$loop);
-		$this->set('types',$type);
-		$this->set('total',$total);
+		$this->set('types',$type);	
 	}
 	
 	
@@ -145,10 +147,11 @@ class InventoriesController extends AppController {
 		$days = Configure::read('Inventory.records');
 		$this->set('records',$days);
 		$end = date('Y-m-d', strtotime('-'.$days.' day'));
-		//$this->Inventory->virtualFields = array('total_quantity' => 'sum(Inventory.quantity)','total_purchase_price' => 'sum(Inventory.purchase_price)','total_sale_price' => 'sum(Inventory.sale_price)');
-		//$Inventory = $this->Inventory->find('all',array('conditions'=>array('Inventory.type'=>$type,array('Inventory.created >=' => $end)),'order'=>array('Inventory.created' => 'desc'),'group' => array('Inventory.product_id')));
-		$Inventory = $this->Inventory->find('all',array('conditions'=>array('Inventory.type'=>$type,array('Inventory.created >=' => $end)),'order'=>array('Inventory.created' => 'desc')));
+		$this->Inventory->virtualFields = array('total_quantity' => 'sum(Inventory.quantity)','total_purchase_price' => 'sum(Inventory.purchase_price)','total_sale_price' => 'sum(Inventory.sale_price)');
+		$Inventory = $this->Inventory->find('all',array('conditions'=>array('Inventory.type'=>$type,array('Inventory.created >=' => $end)),'order'=>array('Inventory.created' => 'desc'),'group' => array('Inventory.product_id')));
+		//$Inventory = $this->Inventory->find('all',array('conditions'=>array('Inventory.type'=>$type,array('Inventory.created >=' => $end)),'order'=>array('Inventory.created' => 'desc')));
 		$this->set('inventories',$Inventory);
+		$this->set('types',$type);
 	}
 
 /**
