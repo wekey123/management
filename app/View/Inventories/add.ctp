@@ -54,15 +54,36 @@ $( "#InventoryProductId" ).change(function() {
     });
 });
 
+
 $('#getVarientValue').click(function() {
 	var myQuan=0,mysalePrice=0,mypurchasePrice=0;
-	
+		var type = $('#type').val();
 		$('.invent_quantity').each(function() {
 			myQuan += (isNaN(parseInt($( this ).val()))) ? 0 : parseInt($( this ).val());
 		});
 		$('#tab div.col-lg-4').each(function() {
-			mypurchasePrice += (isNaN(parseFloat($( this ).find('input.invent_purchase_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_purchase_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
-			mysalePrice += (isNaN(parseFloat($( this ).find('input.invent_sale_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_sale_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
+			
+			myQuantity = (isNaN(parseInt($( this ).find('input.invent_quantity').val()))) ? 0 : parseInt($( this ).find('input.invent_quantity').val());
+			console.log(myQuantity);
+			
+			if(type == 'order'){
+				mypurchasePrice += (isNaN(parseFloat($( this ).find('input.invent_purchase_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_purchase_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
+				mysalePrice += (isNaN(parseFloat($( this ).find('input.invent_sale_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_sale_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
+			}else if(type == 'fulfillment'){
+				if(myQuantity != 0){
+					mypurchasePrice += (isNaN(parseFloat($( this ).find('input.invent_purchase_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_purchase_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
+					mysalePrice += (isNaN(parseFloat($( this ).find('input.invent_sale_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_sale_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
+				}
+				console.log(mypurchasePrice);
+				console.log(mysalePrice); 
+			}else if(type == 'sale'){
+				if(myQuantity != 0){
+					mypurchasePrice += (isNaN(parseFloat($( this ).find('input.invent_purchase_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_purchase_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));
+					mysalePrice += (isNaN(parseFloat($( this ).find('input.invent_sale_price').val()))) ? 0 : (parseFloat($( this ).find('input.invent_sale_price').val()) *  parseInt($( this ).find('input.invent_quantity').val()));	
+				}
+				console.log(mypurchasePrice);
+				console.log(mysalePrice); 
+			}
 		});
 		$('#myQuan').val(myQuan);
 		$('#mypurchasePrice').val(mypurchasePrice);
