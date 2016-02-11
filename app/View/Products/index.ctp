@@ -59,28 +59,28 @@ tr {
 	if(!empty($products)){
 	$i=1;foreach ($products as $product): //echo '<pre>';print_r($product);?>
 	<tr>
-		<td width="30%"><?php echo h($product['Product']['title']); ?>&nbsp;<br><ul class="Titleactions">
-<li><?php echo $this->Html->link(__('View'), array('action' => 'view', $product['Product']['id'])); ?>&nbsp;|&nbsp;</li>
-<li><?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $product['Product']['id'])); ?>&nbsp;|&nbsp;</li>
-<li><?php //echo $this->Html->link(__('Delete'), array('action' => 'delete', $product['Product']['id']),array('class'=>'confirdel')); ?></li>
-</ul></td>
+		<td width="30%"><?php echo $this->Html->link(__($product['Product']['title']), array('action' => 'view', $product['Product']['id'])); ?></td>
         
-		<td width="10%"><?php $orderQty = (!empty($product['Product']['order_qty'])) ? $product['Product']['order_qty'] : 0; ?><?php echo $this->Html->link(__($orderQty), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,'data-myVal'=>'orderInfo'.$i,'class'=>'callModal')); ?>&nbsp;</td>
+		<td width="10%"><?php $orderQty = (!empty($product['Product']['order_qty'])) ? $product['Product']['order_qty'] : 0; ?>
+		<?php if($orderQty !=0){echo $this->Html->link(__($orderQty), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,'data-myVal'=>'orderInfo'.$i,'class'=>'callModal'));}else{ echo $orderQty; } ?>&nbsp;</td>
         <input type="hidden" name="orderInfo" id="orderInfo<?php echo $i ;?>"  value="<?php echo htmlentities(json_encode($product['order'])); ?>"  />
-		<td width="10%"><?php echo (!empty($product['Product']['order_purchase_price'])) ? '$'.$product['Product']['order_purchase_price'] : 0; ?>&nbsp;</td>
+		<td width="10%"><?php $orderPrice = (!empty($product['Product']['order_purchase_price'])) ? $product['Product']['order_purchase_price'] : 0;  
+		echo '$'.$orderPrice;?>&nbsp;</td>
         
-		<td width="10%"><?php $salesQty = (!empty($product['Product']['sale_qty']))? $product['Product']['sale_qty'] : 0; ?><?php echo $this->Html->link(__($salesQty), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,'data-myVal'=>'saleInfo'.$i,'class'=>'callModal')); ?>&nbsp;
+		<td width="10%"><?php $salesQty = (!empty($product['Product']['sale_qty']))? $product['Product']['sale_qty'] : 0; ?>
+		<?php if($salesQty !=0){ echo $this->Html->link(__($salesQty), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,'data-myVal'=>'saleInfo'.$i,'class'=>'callModal'));}else{ echo $salesQty;} ?>&nbsp;
         </td>    
         <input type="hidden" name="saleInfo" id="saleInfo<?php echo $i ;?>"  value="<?php echo htmlentities(json_encode($product['attribute'])); ?>"  />
         
-		<td width="10%"><?php echo (!empty($product['Product']['sale_sale_price'])) ? '$'.$product['Product']['sale_sale_price'] : 0; ?>&nbsp;</td>
+		<td width="10%"><?php  $salePrice = (!empty($product['Product']['sale_sale_price'])) ? '$'.$product['Product']['sale_sale_price'] : 0;  
+		echo '$'.$salePrice; ?>&nbsp;</td>
         
         <td width="10%"><?php echo $orderQty - $salesQty;  ?>&nbsp;</td>
 		<td width="10%"><?php echo ($product['Product']['order_purchase_price'] >= $product['Product']['sale_sale_price']) ? '-$'.($product['Product']['order_purchase_price'] - $product['Product']['sale_sale_price']) : '$'.($product['Product']['sale_sale_price'] - $product['Product']['order_purchase_price']); ?>&nbsp;</td>
 
 		<td class="actions">
-        	<?php echo $this->Html->link(__('Order'), array('controller'=>'inventories','action' => 'add', $product['Product']['id'])); ?>
-			<?php //echo $this->Html->link(__('Varients'), array('action' => '#varientModal'.$i),array('data-toggle'=>'modal','data-target'=>'#varientModal'.$i,));&nbsp;|&nbsp; ?>
+        	<?php echo $this->Html->link(__('order'), array('controller'=>'inventories','action' => 'add', $product['Product']['id'])); ?>&nbsp;|&nbsp;
+            <?php echo $this->Html->link(__('Edit'), array('controller'=>'inventories','action' => 'edit', $product['Product']['id'])); ?>
 		</td>
         <!-- Modal -->
         

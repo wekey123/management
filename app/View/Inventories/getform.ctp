@@ -70,9 +70,9 @@ $i=1;foreach($loops as $key1 => $loop){ ?>
 										}else{  //QTY,sale_price
 										echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false, 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control invent_'.$fields,'placeholder'=>$placeholder,'data-rel'=>$key1.$key2.'count','required'=>false,'label'=>$placeholder));
 										}
-									}else{
+									}else if($types == 'sale'){
 										if($j == 0){	 //QTY
-										echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false, 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control invent_'.$fields,'placeholder'=>$placeholder,'data-rel'=>$key1.$key2.'count','required'=>false,'label'=>$placeholder));
+										echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false, 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control invent_'.$fields,'data-rel'=>$key1.$key2.'count','required'=>false));
 										}else if($j == 1){	 //purchase_price
 										echo '<div class="form-group"><label for="blackSmallQuantity">Purchase Price <span style="font-weight: 100; margin-left: 10px;"> '.$fields.'</span></label></div>';
 										}else if($j == 2){		 //sale_price
