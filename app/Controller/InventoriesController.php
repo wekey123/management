@@ -195,32 +195,12 @@ class InventoriesController extends AppController {
  * @param string $id
  * @return void
  */
-	/*public function editold($id = null) {
-		if (!$this->Inventory->exists($id)) {
-			throw new NotFoundException(__('Invalid inventory'));
-		}
-		if ($this->request->is(array('post', 'put'))) {
-			if ($this->Inventory->save($this->request->data)) {
-				$this->Flash->success(__('The inventory has been saved.'));
-				return $this->redirect(array('action' => 'index'));
-			} else {
-				$this->Flash->error(__('The inventory could not be saved. Please, try again.'));
-			}
-		} else {
-			$options = array('conditions' => array('Inventory.' . $this->Inventory->primaryKey => $id));
-			$this->request->data = $this->Inventory->find('first', $options);
-		}
-		$users = $this->Inventory->User->find('list');
-		$products = $this->Inventory->Product->find('list');
-		$this->set(compact('users', 'products'));
-	}*/
-	
+
 	public function edit($id = null,$type = null) {
 		
 		if ($this->request->is(array('post', 'put'))) {
 			$loops = $this->request->data;
 			$inventory['Inventory'] = $this->request->data['Inventory'];
-			//debug($loops);exit;
 			$this->Inventory->save($inventory);
 			foreach($loops as $key1=> $loop){
 				foreach($loop as $key2=> $value){
@@ -235,19 +215,16 @@ class InventoriesController extends AppController {
 						$data['Vary']['attribute'] = $key1;
 						$data['Vary']['value'] = $key2;
 						$data['Vary']['type'] = $inventory['Inventory']['type'];
-						$keyarry[] = $key3;
 					}
-					if($keyarry[0] == 'id'){
+
+					if(!empty($data['Vary']['id']) && is_numeric($data['Vary']['id'])){
 						$this->Vary->save($data);
 					}else{
-				    	if(!empty($data['Vary'][$keyarry[0]]) && (!empty($data['Vary'][$keyarry[1]]) || !empty($data['Vary'][$keyarry[2]]))){
-							unset($data['Vary']['id']);
+				    	if(!empty($data) && !empty($data['Vary']['quantity']) && (!empty($data['Vary']['purchase_price']) || !empty($data['Vary']['sale_price']))){
 							$this->Vary->create();
 							$this->Vary->save($data);
-							//debug($data); //exit;
 						}
 					}
-					unset($keyarry);
 				}
 			}
 			$this->redirect(array('controller'=>'inventories','action'=>'index',$type));
