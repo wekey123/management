@@ -7,7 +7,7 @@
             <div class="panel panel-default">
             	<div class="panel-heading">Products</div>              
                 <div class="panel-body">
-		<?php 	//echo $types. '<pre>';print_r($loops);
+		<?php 
 			echo $this->Form->input('id',array('div'=>false,'error'=>false,'type'=>'hidden'));
 			echo $this->Form->input('user_id',array('div'=>false,'error'=>false,'type'=>'hidden','value'=>$data['user_id']));
 
@@ -37,43 +37,73 @@
             </li>   
         <?php $i++;} ?>
         </ul>
-        <?php $i=1;foreach($loops as $key1 => $loop){ ?> 
+        <?php //debug($loops);
+        $i=1;foreach($loops as $key1 => $loop){ ?> 
                 
                   <div class="col-lg-12" id="tabs-<?php echo $i ?>">
                     <div class="panel panel-default">
                         <div class="panel-heading"><?php echo strtoupper($key1);?></div>              
                         <div class="panel-body"> 
-                        <?php foreach($loop as $key2 => $value){  
-						if($types == 'order' || ($types == 'sale' && is_numeric($value[3])) || ($types == 'fulfillment' &&  is_numeric($value[3]))){ ?>
+                        <?php foreach($loop as $key2 => $value){ 
+						
+                        if($types == 'order' || ($types == 'sale' && $value[2] != '') || ($types == 'fulfillment' && $value[2] != '')){ ?>
                           <div class="col-lg-4">
                                 <div class="panel panel-default">
                                     <div class="panel-heading"><?php echo strtoupper($key2);?></div>              
                                     <div class="panel-body"> 
-                                  <?php $j=1;foreach($value as $key3 => $fields){ ?>
+                                  <?php $j=0;
+                                
+                                  foreach($value as $key3 => $fields){ ?>
                                         <?php 
                                         if($fields == 'quantity')
                                             $placeholder = 'Qty';
                                         if($fields == 'purchase_price')
                                             $placeholder = 'Purchase Price';
                                         if($fields == 'sale_price')
-                                            $placeholder = 'Sale Price';
-                                      
-										 if($j==3)  {echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false,'type'=>'hidden' , 'id'=>$key1.$key2.'count' , 'value'=>$fields));
-								echo '<b>Quantity Left </b>: '.$fields;
-								}
-								else 
-                                echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false, 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control invent_'.$fields,'placeholder'=>$placeholder,'data-rel'=>$key1.$key2.'count','required'=>false,'label'=>$placeholder));
-										
+                                            $placeholder = 'Sale Price';     			
+                                        if($j==3){ // QTY LEFT
+                                        echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false,'type'=>'hidden' , 'id'=>$key1.$key2.'count' , 'value'=>$fields));
+                                        echo '<div class="form-group"><label for="blackSmallQuantity">Quantity Left <span style="font-weight: 100; margin-left: 10px;"> '.$fields.'</span></label></div>';
+                                        }else{
+											
+                                            if($types == 'order'){	//QTY,purchase_price,sale_price
+											echo $this->Form->input($key1.'.'.$key2.'.id' ,array('div'=>false,'error'=>false,'type'=>'hidden'));
+                                            echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false, 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control invent_'.$fields,'placeholder'=>$placeholder,'data-rel'=>$key1.$key2.'count','required'=>false,'label'=>$placeholder));
+                                            }else if($types == 'fulfillment'){
+												echo $this->Form->input($key1.'.'.$key2.'.id' ,array('div'=>false,'error'=>false,'type'=>'hidden'));
+                                                if($j == 1){	 //purchase_price
+                                                echo $this->Form->input($key1.'.'.$key2.'.purchase_price' ,array('div'=>false,'error'=>false,'type'=>'hidden' , 'id'=>$key1.$key2.'count' , 'value'=>$fields, 'class'=>'validate[required] form-control invent_purchase_price'));
+                                                echo '<div class="form-group"><label for="blackSmallQuantity">Purchase Price <span style="font-weight: 100; margin-left: 10px;"> '.$fields.'</span></label></div>';
+                                                }else{  //QTY,sale_price
+                                                echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false, 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control invent_'.$fields,'placeholder'=>$placeholder,'data-rel'=>$key1.$key2.'count','required'=>false,'label'=>$placeholder));
+                                                }
+                                            }else{
+												echo $this->Form->input($key1.'.'.$key2.'.id' ,array('div'=>false,'error'=>false,'type'=>'hidden'));
+                                                if($j == 0){	 //QTY
+                                                echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false, 'before' => '<div class="form-group">', 'after' => '</div>', 'class'=>'validate[required] form-control invent_'.$fields,'placeholder'=>$placeholder,'data-rel'=>$key1.$key2.'count','required'=>false,'label'=>$placeholder));
+                                                }else if($j == 1){	 //purchase_price
+                                                echo $this->Form->input($key1.'.'.$key2.'.purchase_price' ,array('div'=>false,'error'=>false,'type'=>'hidden' , 'id'=>$key1.$key2.'count' , 'value'=>$fields, 'class'=>'validate[required] form-control invent_purchase_price'));
+                                                echo '<div class="form-group"><label for="blackSmallQuantity">Purchase Price <span style="font-weight: 100; margin-left: 10px;"> '.$fields.'</span></label></div>';
+                                                }else if($j == 2){		 //sale_price
+                                                echo $this->Form->input($key1.'.'.$key2.'.sale_price' ,array('div'=>false,'error'=>false,'type'=>'hidden' , 'id'=>$key1.$key2.'count' , 'value'=>$fields, 'class'=>'validate[required] form-control invent_sale_price'));
+                                                echo '<div class="form-group"><label for="blackSmallQuantity">Sale Price <span style="font-weight: 100; margin-left: 10px;"> '.$fields.'</span></label></div>';
+                                                }
+                                            }								
+                                        }
                                         ?>
-                                  <?php $j++; } ?>
+                                  <?php $j++;}//end of foreach 3 ?>
                                      </div>
                                      </div>
                           </div>
-                        <?php }} ?>
+                        <?php } 
+						}  //end of foreach 2
+						?>
                         </div>
                      </div>
                    </div>
-        <?php $i++;} ?>
+        <?php $i++;} //end of foreach 1
+        echo $this->Form->input('type',array('div'=>false,'error'=>false,'type'=>'hidden','id'=>'type', 'value'=>$types));
+        ?>
         </div>
 
        <br /> 
