@@ -72,7 +72,7 @@ tr {
         </td>    
         <input type="hidden" name="saleInfo" id="saleInfo<?php echo $i ;?>"  value="<?php echo htmlentities(json_encode($product['attribute'])); ?>"  />
         
-		<td width="10%"><?php  $salePrice = (!empty($product['Product']['sale_sale_price'])) ? '$'.$product['Product']['sale_sale_price'] : 0;  
+		<td width="10%"><?php  $salePrice = (!empty($product['Product']['sale_sale_price'])) ? $product['Product']['sale_sale_price'] : 0;  
 		echo '$'.$salePrice; ?>&nbsp;</td>
         
         <td width="10%"><?php echo $orderQty - $salesQty;  ?>&nbsp;</td>
@@ -80,7 +80,7 @@ tr {
 
 		<td class="actions">
         	<?php echo $this->Html->link(__('order'), array('controller'=>'inventories','action' => 'add', $product['Product']['id'])); ?>&nbsp;|&nbsp;
-            <?php echo $this->Html->link(__('Edit'), array('controller'=>'inventories','action' => 'edit', $product['Product']['id'])); ?>
+            <?php echo $this->Html->link(__('Edit'), array('controller'=>'products','action' => 'edit', $product['Product']['id'])); ?>
 		</td>
         <!-- Modal -->
         

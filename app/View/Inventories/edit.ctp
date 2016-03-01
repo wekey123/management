@@ -127,6 +127,25 @@ $(function() {
 	$( "#tab" ).tabs({effect: 'ajax'});
  });
 
+$(".invent_quantity").change(function() {
+	$('.error_msg').remove();
+	var qcount = $('#'+$(this).data('rel')).val();
+	if(Number($(this).val()) > Number(qcount)){console.log('s');
+		$(this).prev().append('<span class="error_msg">Please Enter less then quantity</span>');
+		$('input[type="submit"]').prop('disabled', true);
+	}
+	else {$('.error_msg').remove();console.log('n');
+		var set = false;
+		$('.invent_quantity').each(function() {
+			var qcount = $('#'+$(this).data('rel')).val();
+			if(Number($(this).val()) > Number(qcount)){
+				set = true;
+			}
+		});
+		console.log(set);
+		$('input[type="submit"]').prop('disabled', set);
+	}
+});
 		
 $( "#InventoryType" ).change(function() {
 	var ProductId = $('#InventoryProductId').val();
