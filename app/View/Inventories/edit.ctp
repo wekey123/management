@@ -60,10 +60,18 @@
                                         if($fields == 'purchase_price')
                                             $placeholder = 'Purchase Price';
                                         if($fields == 'sale_price')
-                                            $placeholder = 'Sale Price';     			
+                                            $placeholder = 'Sale Price'; 
+										if($j==0){ 
+											$editLeft =   $this->request->data[$key1][$key2]['quantity'];
+										}
                                         if($j==3){ // QTY LEFT
-                                        echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false,'type'=>'hidden' , 'id'=>$key1.$key2.'count' , 'value'=>$fields));
-                                        echo '<div class="form-group"><label for="blackSmallQuantity">Quantity Left <span style="font-weight: 100; margin-left: 10px;"> '.$fields.'</span></label></div>';
+											if($types == 'fulfillment' || $types == 'sale'){
+												$editLeft = $editLeft+ $fields;
+												echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false,'type'=>'hidden' , 'id'=>$key1.$key2.'count' , 'value'=>$editLeft));
+												echo '<div class="form-group"><label for="blackSmallQuantity">Quantity<span style="font-weight: 100; margin-left: 10px;"> '.$editLeft.'</span></label></div>';		
+											}else{
+												echo $this->Form->input($key1.'.'.$key2.'.'.$fields ,array('div'=>false,'error'=>false,'type'=>'hidden' , 'id'=>$key1.$key2.'count' , 'value'=>$editLeft));
+												echo '<div class="form-group"><label for="blackSmallQuantity">Quantity Left <span style="font-weight: 100; margin-left: 10px;"> '.$fields.'</span></label></div>';			}
                                         }else{
 											
                                             if($types == 'order'){	//QTY,purchase_price,sale_price
