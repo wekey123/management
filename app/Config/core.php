@@ -217,8 +217,8 @@
 	Configure::write('Session', array(
 		'defaults' => 'php'
 	));
-	
-	if($_SERVER['REMOTE_ADDR'] == '52.4.188.247')
+
+	if($_SERVER['SERVER_NAME'] == '52.4.188.247')
 		Configure::write('ServerBaseURL', 'http://52.4.188.247/management');
 	else
 		Configure::write('ServerBaseURL', '');
