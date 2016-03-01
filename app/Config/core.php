@@ -217,7 +217,11 @@
 	Configure::write('Session', array(
 		'defaults' => 'php'
 	));
-
+	
+	if($_SERVER['REMOTE_ADDR'] == '52.4.188.247')
+		Configure::write('ServerBaseURL', 'http://52.4.188.247/management');
+	else
+		Configure::write('ServerBaseURL', '');
 /**
  * A random string used in security hashing methods.
  */

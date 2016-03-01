@@ -33,13 +33,15 @@
             </div>
         </div>
 	</fieldset>
+    
 <?php echo $this->Form->submit(__('Submit'),array('div'=>false, 'class'=>'btn btn-lg btn-success btn-block' ,'id' => 'getVarientValue')); echo $this->Form->end();	?>
 </div>
 <script>
+var ServerConfig = '<?php echo Configure::read('ServerBaseURL'); ?>';
 $( "#InventoryType" ).change(function() {
 	var ProductId = $('#InventoryProductId').val();
 	var ProductType = $(this).val();
-    $.post("/inventories/getform/"+ProductId+'/'+ProductType, function(data, status){
+    $.post(ServerConfig+"/inventories/getform/"+ProductId+'/'+ProductType, function(data, status){
 		console.log(data); 
 		$('#result').html(data);
     });
@@ -48,7 +50,7 @@ $( "#InventoryType" ).change(function() {
 $( "#InventoryProductId" ).change(function() {
 	var ProductId = $(this).val();
 	var ProductType = $('#InventoryType').val();
-    $.post("/inventories/getform/"+ProductId+'/'+ProductType, function(data, status){
+    $.post(ServerConfig+"/inventories/getform/"+ProductId+'/'+ProductType, function(data, status){
 		console.log(data); 
 		$('#result').html(data);
     });
